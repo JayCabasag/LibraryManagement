@@ -1,0 +1,2 @@
+import ApproveAdminRequestDialog from "./ApproveRequestAdminDialog";
+export default ApproveAdminRequestDialog

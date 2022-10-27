@@ -27,6 +27,12 @@ const classes = {
         width: '100%',
         gap: 1
     },
+    searchTextfield: {
+        flexGrow: 1,
+        '& .MuiInputBase-root': {
+            height: 48
+        }
+    },
     searchButton: {
         paddingLeft: 5,
         paddingRight: 5

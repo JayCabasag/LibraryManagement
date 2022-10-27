@@ -22,6 +22,12 @@ const classes = {
         marginTop: 1,
         padding: 1
     },
+    searchTextfield: {
+        flexGrow: 1,
+        '& .MuiInputBase-root': {
+            height: 48
+        }
+    },
     searchContainer: {
         display: 'flex',
         width: '100%',
@@ -32,7 +38,6 @@ const classes = {
         paddingRight: 5
     },
     professorListContainer: {
-        
         display: 'flex',
         flexDirection: 'column',
         width: '100%',

@@ -24,7 +24,7 @@ const Students = () => {
        </Typography>
        <Box sx={classes.studentBodyContainer} onScroll={handleCheckIfScrolledToBottom}>
           <Box sx={classes.searchContainer}>
-            <TextField size='small' placeholder='Search by name' InputProps={{startAdornment: <InputAdornment position="start"><SearchOutlined/></InputAdornment>}} sx={{flex: 1}} />
+            <TextField size='small' placeholder='Search by name' InputProps={{startAdornment: <InputAdornment position="start"><SearchOutlined/></InputAdornment>}} sx={classes.searchTextfield} />
             <Button variant='contained' sx={classes.searchButton}>Search</Button>
           </Box>
           <Box sx={classes.studentListContainer}>

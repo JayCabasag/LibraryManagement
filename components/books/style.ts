@@ -22,6 +22,12 @@ const classes = {
         marginTop: 1,
         padding: 1
     },
+    searchTextfield: {
+        flexGrow: 1,
+        '& .MuiInputBase-root': {
+            height: 48
+        }
+    },
     searchAndAddBookContainer: {
         display: 'flex',
         width: '100%',

@@ -54,7 +54,7 @@ const Admins = () => {
           <Box sx={classes.adminListContainer}>
             {
               [1, 2, 3].map((data, index) => {
-                return <AdminList key={index} fullname='fullname' adminId='#43434' adminType='admin'  adminProfileImage={IMAGES.NO_IMAGE_AVAILABLE}/>
+                return <AdminList key={index} fullname='fullname' adminId='#43434' adminType='Admin'  adminProfileImage={IMAGES.NO_IMAGE_AVAILABLE}/>
               })
             }
           </Box>

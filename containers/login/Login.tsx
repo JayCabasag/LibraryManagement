@@ -39,7 +39,7 @@ const Login = () => {
         <Card sx={classes.loginCardContainer}>
               <CardContent>
                 <Typography variant='h2' textAlign={'center'} mb={3} color={COLORS.RED}>TCU Mobile Library</Typography>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 1}}>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 1, marginBottom: 2}}>
                   <TextField id="outlined-basic" label="Username / Employee No." variant="outlined" type='text' sx={classes.inputTextField} />
                   <TextField id="outlined-basic" label="Password" variant="outlined" type='password' sx={classes.inputTextField}/>
                 </Box>

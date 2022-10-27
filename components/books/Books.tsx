@@ -42,7 +42,15 @@ const Books = () => {
        </Typography>
        <Box sx={classes.dashboardBodyContainer}  onScroll={handleCheckIfScrolledToBottom}>
           <Box sx={classes.searchAndAddBookContainer}>
-            <TextField size='small' placeholder='Search by Book ID' InputProps={{startAdornment: <InputAdornment position="start"><SearchOutlined/></InputAdornment>}} sx={{flex: 1}} />
+            <TextField size='small' 
+              placeholder='Search by Book ID' 
+              InputProps={{startAdornment: 
+              <InputAdornment position="start">
+                <SearchOutlined/>
+              </InputAdornment>}} 
+              sx={classes.searchTextfield} 
+              inputProps={{style: {height: 30}}} 
+            />
             <Button variant='contained' sx={classes.addBookButton} onClick={handleOpenAddBookDialog}>Add Book</Button>
           </Box>
           <Box sx={classes.bookListContainer}>
