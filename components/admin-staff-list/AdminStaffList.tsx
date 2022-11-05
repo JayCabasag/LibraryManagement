@@ -3,17 +3,29 @@ import React from 'react'
 import Image from 'next/image'
 import EditAdminDialog from '../admin-edit-dialog'
 import DeleteAdminDialog from '../admin-delete-dialog'
+import { useAuth } from '../../context/AuthContext'
 interface AdminStaffListProps {
     fullname: string,
     adminId: string,
     adminType: string,
-    adminProfileImage: string
+    adminProfileImage: string,
+    adminStatus: string
 }
 
-const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage}: AdminStaffListProps) => {
+enum ADMIN_TYPE {
+  HEAD_ADMIN = 'head admin',
+  ADMIN = 'admin',
+  STAFF = 'staff',
+  REQUESTIONG_FOR_ADMIN = 'requesting'
+}
+
+
+const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminStatus}: AdminStaffListProps) => {
   const [showEditAdminDialog, setShowEditAdminDialog] = React.useState<boolean>(false)
   const [showDeleteAdminDialog, setShowDeleteAdminDialog] = React.useState<boolean>(false)
   
+  const hasAdminType = adminStatus === ADMIN_TYPE.ADMIN ||  adminStatus === ADMIN_TYPE.HEAD_ADMIN
+
   const handleShowEditAdminDialog =  () => {
     setShowEditAdminDialog(true)
   }
@@ -58,12 +70,16 @@ const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage}: Admin
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
           {fullname}
         </Typography>
-        <Typography variant='body1' sx={{fontSize: 15}}>Rank: {adminType}</Typography>
+        <Typography variant='body1' sx={{fontSize: 15, textTransform: 'capitalize'}}>Rank: {adminType}</Typography>
       </Box>
     </CardContent>
     <CardActions>
-      <Button size="small" variant='outlined' onClick={handleShowEditAdminDialog}>Edit</Button>
-      <Button size="small" variant='contained' onClick={handleOpenDeleteAdminDialog}>Delete</Button>
+      {
+        hasAdminType && (<>
+          <Button size="small" variant='outlined' onClick={handleShowEditAdminDialog}>Edit</Button>
+          <Button size="small" variant='contained' onClick={handleOpenDeleteAdminDialog}>Delete</Button> 
+        </>)
+      }
     </CardActions>
   </Card>
   )

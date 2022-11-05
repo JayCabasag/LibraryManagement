@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   distDir: 'build',
   images: {
-    domains: ['tcu.taguig.gov.ph', 'pbs.twimg.com', 'upload.wikimedia.org'],
+    domains: ['tcu.taguig.gov.ph', 'pbs.twimg.com', 'upload.wikimedia.org', 'firebasestorage.googleapis.com', 'tcumobilelibrary.appspot.com'],
   },
 }
 

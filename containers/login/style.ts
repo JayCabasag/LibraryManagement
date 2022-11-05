@@ -10,7 +10,8 @@ const classes = {
         position: 'absolute', 
         backgroundColor: 'red', 
         zIndex: -9, 
-        backgroundImage: `url(${IMAGES.LOGIN_IMG_BACKGROUND_IMG})`
+        backgroundImage: `url(${IMAGES.LOGIN_IMG_BACKGROUND_IMG})`,
+        backgroundSize: 'cover'
     },
     backgroundImageContainerBackdrop: {
         height: '100%', 
@@ -74,7 +75,7 @@ const classes = {
         width: '100%', 
         gap: 1, 
         marginTop: 1
-    }
+    },
 } as Record<string, SxProps>
 
 export default classes

@@ -1,6 +1,9 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Autocomplete} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Autocomplete, Alert} from '@mui/material'
 import {IMAGES} from '../../utils/app_constants'
+import Image from 'next/image'
+import { useAuth } from '../../context/AuthContext'
+import { firebaseAuthMessageConverter } from '../../utils/helpers'
 interface EditAdminDialogProps {
     fullname: string
     adminId: string
@@ -16,21 +19,65 @@ const DeclineAdminRequest = ({ fullname, adminId, adminType,adminProfileImage,sh
 
     const [selectedAdminType, setSelectedAdminType] = React.useState<string | null>(adminType);
     const [inputValue, setInputValue] = React.useState('');
-  
+    const [adminPassword, setAdminPassword] = React.useState<string>('')
+    const [error, setError] = React.useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = React.useState('')
+
+    const {deleteAdminRequest, reAuthenticateUser, user} = useAuth()
+
+    const handleDeclineStaffRequest = async () => {
+      setError(false)
+      if(adminPassword === ''){
+        setErrorMessage('Please add your admin password')
+        setError(true)
+        return
+      }
+      if(adminPassword.length < 7){
+        setErrorMessage('Password should atleast 8 letters')
+        setError(true)
+        return
+      }
+      
+      reAuthenticateUser(user.email, adminPassword).then((response: any) => {
+        deleteAdminRequest(adminId).then((response: any) => {
+          setError(false)
+          handleCloseDeclineAdminRequestDialog()
+        }).catch((error: any) => {
+          const firebaseErrorMessage = firebaseAuthMessageConverter(error.code)
+          setErrorMessage(firebaseErrorMessage)
+          setError(true)
+        })
+      }).catch((error: any) => {
+        const firebaseErrorMessage = firebaseAuthMessageConverter(error.code)
+        setErrorMessage(firebaseErrorMessage)
+        setError(true)
+      })
+    }
+
+    const handleUpdateAdminPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const passwordValue = event.currentTarget.value
+      setAdminPassword(passwordValue)
+    }
+
     return (
     <Dialog open={showDeclineAdminRequestDialog}>
-          <DialogTitle variant='h3'>Decline staff request approval</DialogTitle>
+          <DialogTitle variant='h3'>Decline staff request</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Note : This can't be undone
+              {
+                error ?  <Alert severity='error'>{errorMessage}</Alert> :  <Alert severity='warning'>This can&apos;t be undone</Alert>
+              }
             </DialogContentText>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <img 
-                    src={IMAGES.NO_IMAGE_AVAILABLE}
+                <Image
+                    src={adminProfileImage}
                     alt='profile'
                     height={300}
                     width={300}
+                    onError={({currentTarget}) => {
+                      currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE
+                    }}
                 />
               </Box>
               <Box sx={{display: 'flex', flexDirection: 'column', gap: 1}}>
@@ -68,6 +115,7 @@ const DeclineAdminRequest = ({ fullname, adminId, adminType,adminProfileImage,sh
                     options={adminTypeOptions}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Rank" />}
+                    disabled
                 />
                  <TextField
                     autoFocus
@@ -77,14 +125,15 @@ const DeclineAdminRequest = ({ fullname, adminId, adminType,adminProfileImage,sh
                     type="password"
                     fullWidth
                     variant="outlined"
-                    helperText='Enter password to save changes'
+                    helperText='Enter your password to decline request'
+                    onChange={handleUpdateAdminPassword}
                 />
               </Box>
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeclineAdminRequestDialog}>Cancel</Button>
-            <Button onClick={handleCloseDeclineAdminRequestDialog}>Continue</Button>
+            <Button onClick={handleDeclineStaffRequest}>Continue</Button>
           </DialogActions>
         </Dialog>
   )

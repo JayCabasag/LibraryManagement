@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Box } from '@mui/material'
 import DeleteUserDialog from '../user-delete-dialog'
 import EditUserDialog from '../user-edit-dialog'
+import {IMAGES} from '../../utils/app_constants'
 
 interface UserListProps {
     fullname: string,
@@ -39,7 +40,7 @@ const UserList = ({fullname, userId, userType, userProfileImage}: UserListProps)
       <DeleteUserDialog openDeleteUserDialog={openDeleteUserDialog} userDetails={{name: 'Jay', fullname: 'Secret', id: 'idididi'}} handleCloseDeleteUserDialog={ handleCloseDeleteUserDialog} />
      <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>
       <Box>
-        <Image src={userProfileImage} alt='Book cover' height={75} width={75} />
+        <Image src={userProfileImage} alt='User profile' onError={({currentTarget})=> currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE} height={75} width={75} />
       </Box>
       <Box>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>

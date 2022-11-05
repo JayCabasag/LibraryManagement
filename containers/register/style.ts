@@ -1,7 +1,7 @@
 import { SxProps } from "@mui/material";
 import { COLORS, IMAGES } from "../../utils/app_constants";
 
-const MINIMUM_FIELD_CONTAINER_WIDTH = '800px'
+const MINIMUM_FIELD_CONTAINER_WIDTH = '650px'
 
 const classes = {
     backgroundImageContainer: {

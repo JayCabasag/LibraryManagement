@@ -8,14 +8,24 @@ interface AdminApprovalRequestListProps {
     fullname: string,
     adminId: string,
     adminType: string,
-    adminProfileImage: string
+    adminProfileImage: string,
+    adminStatus: string
+}
+enum ADMIN_TYPE {
+  HEAD_ADMIN = 'head admin',
+  ADMIN = 'admin',
+  STAFF = 'staff',
+  REQUESTIONG_FOR_ADMIN = 'requesting'
 }
 
-const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileImage}: AdminApprovalRequestListProps) => {
+
+const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileImage, adminStatus}: AdminApprovalRequestListProps) => {
   
   const [showDeclineAdminRequestDialog, setShowDeclineAdminRequestDialog] = React.useState<boolean>(false)
   const [showApproveAdminRequestDialog, setShowApproveAdminRequestDialog] = React.useState<boolean>(false)
   
+  const hasAdminType = adminStatus === ADMIN_TYPE.ADMIN ||  adminStatus === ADMIN_TYPE.HEAD_ADMIN
+
   const handleShowDeclineAdminRequestDialog =  () => {
     setShowDeclineAdminRequestDialog(true)
   }
@@ -61,12 +71,16 @@ const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileIma
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
           {fullname}
         </Typography>
-        <Typography variant='body1' sx={{fontSize: 15}}>Rank: {adminType}</Typography>
+        <Typography variant='body1' sx={{fontSize: 15, textTransform: 'capitalize'}}>Rank: {adminType}</Typography>
       </Box>
     </CardContent>
     <CardActions>
-      <Button size="small" variant='outlined' onClick={handleShowDeclineAdminRequestDialog}>Decline</Button>
-      <Button size="small" variant='contained' onClick={handleOpenApproveAdminRequestDialog}>Approve</Button>
+      {
+        hasAdminType && (<>
+            <Button size="small" variant='outlined' onClick={handleShowDeclineAdminRequestDialog}>Decline</Button>
+            <Button size="small" variant='contained' onClick={handleOpenApproveAdminRequestDialog}>Approve</Button> 
+        </>)
+      }
     </CardActions>
   </Card>
   )

@@ -2,7 +2,6 @@ import { SxProps } from "@mui/material"
 
 const classes = {
     dashboardMainContainer: {
-        marginTop: 12,
         marginLeft: 5,
         marginRight: 5, 
         position: 'relative',
@@ -24,9 +23,6 @@ const classes = {
     },
     searchTextfield: {
         flexGrow: 1,
-        '& .MuiInputBase-root': {
-            height: 48
-        }
     },
     searchAndAddBookContainer: {
         display: 'flex',

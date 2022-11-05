@@ -1,6 +1,7 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Autocomplete} from '@mui/material'
 import {IMAGES} from '../../utils/app_constants'
+import Image from 'next/image'
 interface EditAdminDialogProps {
     fullname: string
     adminId: string
@@ -26,7 +27,7 @@ const DeleteAdminDialog = ({ fullname, adminId, adminType,adminProfileImage,show
             </DialogContentText>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <img 
+                <Image
                     src={IMAGES.NO_IMAGE_AVAILABLE}
                     alt='profile'
                     height={300}
