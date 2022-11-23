@@ -8,12 +8,12 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCsKrpd55ZXHLt0hwQ9XPQSZxE5DReVHqM",
-  authDomain: "tcumobilelibrary.firebaseapp.com",
-  projectId: "tcumobilelibrary",
-  storageBucket: "tcumobilelibrary.appspot.com",
-  messagingSenderId: "17886281452",
-  appId: "1:17886281452:web:fa7f3f22dc4be7c6982fc9"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID
 };
 
 // Initialize Firebase

@@ -224,25 +224,7 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
       setError(true)
       return
     }
-    // This is to add automatically tags that later on have impact on algorithm
-    try {
-      const currentTags = bookData?.tags
-      currentTags?.forEach( async (tag: string) => {
-        await setDoc(doc(db, "tags", tag), {
-          tag: tag,
-          popularity: increment(1)
-        }).catch((error: any) => {
-          setInProgress(false)
-          setErrorMessage('Error adding tags for this book')
-          setError(true)
-        })
-      });
-    } catch (error: any) {
-      setInProgress(false)
-      setErrorMessage('Please check your internet connection.')
-      setError(true)
-    }
-
+  
     try {
       await addDoc(collection(db, "books"), payload).then((response: any) => {
         const bookId = response?.id as string || 'Not set'

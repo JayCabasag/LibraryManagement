@@ -26,7 +26,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
   const [inProgress, setInProgress] = React.useState<boolean>(false)
 
   const [bookData, setBookData] = React.useState<any>(bookDetails || {})
-  let bookTags = bookData?.tags?.reduce((accumulator: string, currentValue: string) => {
+  let bookTags: string = bookData?.tags?.reduce((accumulator: string, currentValue: string) => {
     return accumulator + ' ' + currentValue
   }, '')
   const [bookCoverPhotoUrl, setBookCoverPhotoUrl] = React.useState<string>(bookData.bookCoverImage || IMAGES.NO_IMAGE_AVAILABLE)
@@ -307,7 +307,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                 type="text"
                 fullWidth
                 variant="outlined"
-                defaultValue={bookTags}
+                defaultValue={bookTags?.substring(1) ?? ''}
                 onChange={handleUpdateBookTags}
               />
               <Box sx={{display: 'flex', alignItems: 'center', gap: 1, marginTop: 1}}>
