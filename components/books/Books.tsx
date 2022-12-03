@@ -10,7 +10,7 @@ import useGetBooksData from '../../hooks/useGetBooksData'
 import { useDebouncedCallback } from 'use-debounce'
 import { db } from '../../services/firebase-config'
 import { serverTimestamp } from 'firebase/firestore';
-import { collection, query, where, getDocs, addDoc} from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, doc, getDoc} from "firebase/firestore";
 import Image from 'next/image'
 
 const BOOK_LOAD_PER_REFRESH = 50
@@ -33,6 +33,10 @@ const Books = () => {
   const [searchedBookResults, setSearchedBookResults] = useState<any[]>([])
   const hasBookSearchResultsFound = searchedBookResults.length > 0
 
+  const handleRefreshBookList = () => {
+    setMaxBookResultsLimit(prevState => prevState - 1)
+    setSearchedBookResults([])
+  }
   // This will help us load more data if user scroll to bottom of the div
   const handleCheckIfScrolledToBottom = (event: React.UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget
@@ -69,9 +73,8 @@ const Books = () => {
     querySnapshot.forEach((doc) => {
       responseBook.push({docId: doc.id, ...doc.data()});
     });
-    
-    setSearchedBookResults([...responseBook])    
 
+    setSearchedBookResults([...responseBook])
   }
 
   const debounceKeyword = useDebouncedCallback((value) => {
@@ -82,7 +85,6 @@ const Books = () => {
 
   const handleOnPressedEnter = (value: string) => {
     setSearchBookKeyword(value)
-    
   }
 
   
@@ -148,13 +150,13 @@ const Books = () => {
             {
               hasBookSearchResultsFound && (
                 searchedBookResults.map((data: any, index: any) => {
-                  return <BookList key={index} title={data.title} bookId={`#${data.docId}`} bookSummary={data.description} bookCoverImage={data.book_cover} bookPdfFile={data.file} tags={data.tags} createdAt={data.createdAt}/>
+                  return <BookList key={index} bookData={data} handleRefreshBookList={handleRefreshBookList}/>
                 })
               )
             }
             <Typography textAlign={'center'} component='h6'>List of books ({bookList.length})</Typography>
             {bookList.map((data: any, index: any) => {
-                return <BookList key={index} title={data.title} bookId={`#${data.docId}`} bookSummary={data.description} bookCoverImage={data.book_cover} bookPdfFile={data.file} tags={data.tags} createdAt={data.createdAt}/>
+                return <BookList key={index} bookData={data} handleRefreshBookList={handleRefreshBookList}/>
               })}
             {isLoading && (
                <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20vh', width: '100%', gap: 2}}>

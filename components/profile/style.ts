@@ -14,7 +14,7 @@ const classes = {
         overflowX: 'hidden',
         width: '100%',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         flex: 1,
         gap: 3,
         marginTop: 1,

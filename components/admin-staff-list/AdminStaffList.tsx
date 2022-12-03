@@ -4,12 +4,16 @@ import Image from 'next/image'
 import EditAdminDialog from '../admin-edit-dialog'
 import DeleteAdminDialog from '../admin-delete-dialog'
 import { useAuth } from '../../context/AuthContext'
+import { db } from '../../services/firebase-config'
+import { doc, deleteDoc } from "firebase/firestore";
+
 interface AdminStaffListProps {
     fullname: string,
     adminId: string,
     adminType: string,
     adminProfileImage: string,
-    adminStatus: string
+    adminStatus: string,
+    handleRefreshAdminList: () => void
 }
 
 enum ADMIN_TYPE {
@@ -20,10 +24,10 @@ enum ADMIN_TYPE {
 }
 
 
-const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminStatus}: AdminStaffListProps) => {
+const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminStatus, handleRefreshAdminList}: AdminStaffListProps) => {
   const [showEditAdminDialog, setShowEditAdminDialog] = React.useState<boolean>(false)
   const [showDeleteAdminDialog, setShowDeleteAdminDialog] = React.useState<boolean>(false)
-  
+
   const hasAdminType = adminStatus === ADMIN_TYPE.ADMIN ||  adminStatus === ADMIN_TYPE.HEAD_ADMIN
 
   const handleShowEditAdminDialog =  () => {
@@ -39,6 +43,26 @@ const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminS
   const handleCloseDeleteAdminDialog = () => {
     setShowDeleteAdminDialog(false)
   }
+
+  const handleCloseAfterDeleteAdminDialog = async () => {
+    setShowDeleteAdminDialog(false)
+    try {
+        await deleteDoc(doc(db, "admins", adminId)).then(()=>{
+          handleRefreshAdminList()
+         }
+        ).catch(() => {
+          
+        })
+       } catch (error) {
+       
+       }
+  }
+
+  const handleCloseAfterEditAdminDialog = () => {
+    setShowEditAdminDialog(false)
+    handleRefreshAdminList()
+  }
+
   return (
     <Card sx={{ minWidth: '100%', display: 'flex', flexDirection: 'row'}} elevation={2}>
      
@@ -50,6 +74,7 @@ const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminS
           adminProfileImage={adminProfileImage}
           showEditAdminDialog={showEditAdminDialog}
           handleCloseEditAdminDialog={handleCloseEditAdminDialog}
+          handleCloseAfterEditAdminDialog={handleCloseAfterEditAdminDialog}
         />
 
       {/* Show dialog to delete admin */}
@@ -60,6 +85,7 @@ const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminS
           adminProfileImage={adminProfileImage}
           showDeleteAdminDialog={showDeleteAdminDialog}
           handleCloseDeleteAdminDialog={handleCloseDeleteAdminDialog}
+          handleCloseAfterDeleteAdminDialog={handleCloseAfterDeleteAdminDialog}
         />
         
     <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>

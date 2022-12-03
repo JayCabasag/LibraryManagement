@@ -8,18 +8,14 @@ import DeleteBookDialog from '../books-delete-dialog'
 import EditBookDialog from '../books-edit-dialog'
 
 interface BookListProps {
-    title: string,
-    bookId: string,
-    bookSummary: string,
-    bookCoverImage: string,
-    bookPdfFile: string,
-    tags: [],
-    createdAt: string
+  bookData: any,
+  handleRefreshBookList: () => void
 }
 
-const BookList = ({title, bookId, bookSummary, bookCoverImage,bookPdfFile, tags, createdAt}: BookListProps) => {
+const BookList = ({bookData, handleRefreshBookList}: BookListProps) => {
   const [openEditBookDialog, setOpenEditBookDialog] = useState<boolean>(false)
   const [openDeleteBookDialog, setOpenDeleteBookDialog] = useState<boolean>(false)
+
   const handleOpenDeleteButton = () => {
     setOpenDeleteBookDialog(true)
   }
@@ -41,23 +37,22 @@ const BookList = ({title, bookId, bookSummary, bookCoverImage,bookPdfFile, tags,
 
   return (
     <Card sx={{ minWidth: '100%', display: 'flex', flexDirection: 'row'}} elevation={2}>
-
       {/* Delete dialog starts here */}
-        <EditBookDialog openEditBookDialog={openEditBookDialog} bookDetails={{title, bookId, bookSummary, bookCoverImage, bookPdfFile, tags, createdAt}} handleOnEditImage={handleOnEditImage} handleCloseEditBookDialog={handleCloseEditBookDialog}/>
-        <DeleteBookDialog openDeleteBookDialog={openDeleteBookDialog} bookDetails={{title, bookId, bookSummary, bookCoverImage, bookPdfFile, tags, createdAt}} handleCloseDeleteBookDialog={handleCloseDeleteBookDialog}/>
+        <EditBookDialog openEditBookDialog={openEditBookDialog} bookDetails={bookData} handleOnEditImage={handleOnEditImage} handleCloseEditBookDialog={handleCloseEditBookDialog}/>
+        <DeleteBookDialog openDeleteBookDialog={openDeleteBookDialog} bookDetails={bookData} handleCloseDeleteBookDialog={handleCloseDeleteBookDialog} handleRefreshBookList={handleRefreshBookList}/>
       {/* Delete dialog ends here */}
     <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>
       <Box>
-        <Image src={bookCoverImage} alt='Book cover' onError={({currentTarget}) => {currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE}} height={150} width={150} />
+        <Image src={bookData?.book_cover as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='Book cover' onError={({currentTarget}) => {currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE}} height={150} width={150} />
       </Box>
       <Box>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-          {shortenSentence(title, 60, '...')} <Typography component={'span'} sx={{color: 'grayText', fontStyle: 'italic', cursor: 'pointer',paddingLeft: 1, paddingRight: 1}}>{bookId}</Typography>
+          {shortenSentence(bookData?.title as string ?? '', 60, '...')} <Typography component={'span'} sx={{color: 'grayText', fontStyle: 'italic', cursor: 'pointer',paddingLeft: 1, paddingRight: 1}}>{bookData?.docId as string ?? 'Not set'}</Typography>
         </Typography>
-        <Typography variant='body1' sx={{fontSize: 15}}>{shortenSentence(bookSummary, 60, '...')}</Typography>
+        <Typography variant='body1' sx={{fontSize: 15}}>{shortenSentence(bookData?.bookSummary as string ?? '', 60, '...')}</Typography>
         <Box sx={{display: 'flex', gap: 1}}>
           {
-            tags?.map((tag: string, index: number) => {
+            bookData?.tags?.map((tag: string, index: number) => {
               return <Chip label={tag} key={index}/>
             })
           }

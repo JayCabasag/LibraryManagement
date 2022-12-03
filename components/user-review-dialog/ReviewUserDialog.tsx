@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Divider, Chip, Avatar, InputAdornment, IconButton} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, InputAdornment, IconButton} from '@mui/material'
 import Image from 'next/image'
 import {IMAGES} from '../../utils/app_constants'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -11,7 +11,7 @@ interface EditUserDialogProps  {
     handleCloseEditUserDialog: () => void
 }
 
-const EditUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserDialog} : EditUserDialogProps) => {
+const ReviewUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserDialog} : EditUserDialogProps) => {
   
   const [showPassword, setShowPassword] = React.useState<boolean>(false) 
 
@@ -19,41 +19,39 @@ const EditUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserDia
     setShowPassword(!showPassword)
   }
 
+  const encodedPassword = userDetails?.password as string ?? ''
+  const decodedPassword = atob(encodedPassword);
+
   return (
     <Dialog open={openEditUserDialog} onClose={handleCloseEditUserDialog}>
-          <DialogTitle variant='h3'>Edit user information</DialogTitle>
+          <DialogTitle variant='h3'>Review user information</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              To edit book, make sure to save your changes.
+              <Alert severity='warning'>Editing user details should be made by user.</Alert>
             </DialogContentText>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <Image src={IMAGES.NO_IMAGE_AVAILABLE} alt='book cover'  height={300} width={300}/>
+                <Image src={userDetails?.photoURL as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='book cover'  height={300} width={300}/>
               </Box>
               <Box>
                 <Typography>User Information</Typography>
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="User Id"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        disabled
-                    />
-                    <Chip
-                        avatar={<Avatar alt="Natacha" src={IMAGES.NO_IMAGE_AVAILABLE} />}
-                        label={userDetails.userType}
-                        variant="outlined"
-                    />
-                </Box>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="uid"
+                  defaultValue={userDetails?.docId as string ?? 'Not set'}
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  disabled
+                />
                 <TextField
                 autoFocus
                 margin="dense"
                 id="name"
                 label="Name"
+                defaultValue={userDetails?.fullname as string ?? 'Not set'}
                 type="text"
                 fullWidth
                 variant="outlined"
@@ -64,6 +62,7 @@ const EditUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserDia
                 id="name"
                 label="Email"
                 type="text"
+                defaultValue={userDetails?.email as string ?? 'Not set'}
                 fullWidth
                 variant="outlined"
                 multiline
@@ -74,6 +73,7 @@ const EditUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserDia
                 id="name"
                 label="User password"
                 type={showPassword ? 'text' : 'password'}
+                defaultValue={decodedPassword}
                 fullWidth
                 variant="outlined"
                 InputProps={{
@@ -88,26 +88,14 @@ const EditUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserDia
                     ),
                   }}
               />
-              <Divider sx={{marginTop: 1}}/>
-              <Typography>Admin</Typography>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Password"
-                type="password"
-                fullWidth
-                variant="outlined"
-              />
               </Box>
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseEditUserDialog}>Discard</Button>
-            <Button onClick={handleCloseEditUserDialog}>Save Changes</Button>
+            <Button onClick={handleCloseEditUserDialog} variant={'outlined'}>Close</Button>
           </DialogActions>
         </Dialog>
   )
 }
 
-export default EditUserDialog
+export default ReviewUserDialog

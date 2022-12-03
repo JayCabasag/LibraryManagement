@@ -11,9 +11,10 @@ interface EditAdminDialogProps {
     adminProfileImage: string
     showDeclineAdminRequestDialog: boolean
     handleCloseDeclineAdminRequestDialog: () => void
+    handleRefreshAdminList: () => void
 }
 
-const DeclineAdminRequest = ({ fullname, adminId, adminType,adminProfileImage,showDeclineAdminRequestDialog, handleCloseDeclineAdminRequestDialog} : EditAdminDialogProps) => {
+const DeclineAdminRequest = ({ fullname, adminId, adminType,adminProfileImage,showDeclineAdminRequestDialog, handleCloseDeclineAdminRequestDialog, handleRefreshAdminList} : EditAdminDialogProps) => {
     
     const adminTypeOptions = ['Head Admin', 'Admin', 'Staff']
 
@@ -42,6 +43,7 @@ const DeclineAdminRequest = ({ fullname, adminId, adminType,adminProfileImage,sh
         deleteAdminRequest(adminId).then((response: any) => {
           setError(false)
           handleCloseDeclineAdminRequestDialog()
+          handleRefreshAdminList()
         }).catch((error: any) => {
           const firebaseErrorMessage = firebaseAuthMessageConverter(error.code)
           setErrorMessage(firebaseErrorMessage)

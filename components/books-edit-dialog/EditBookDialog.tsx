@@ -14,7 +14,7 @@ interface EditBookDialogProps  {
     openEditBookDialog: boolean,
     bookDetails: any,
     handleOnEditImage: (e: Object) => void,
-    handleCloseEditBookDialog: () => void
+    handleCloseEditBookDialog: () => void,
 }
 
 const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, handleCloseEditBookDialog} : EditBookDialogProps) => {
@@ -29,9 +29,9 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
   let bookTags: string = bookData?.tags?.reduce((accumulator: string, currentValue: string) => {
     return accumulator + ' ' + currentValue
   }, '')
-  const [bookCoverPhotoUrl, setBookCoverPhotoUrl] = React.useState<string>(bookData.bookCoverImage || IMAGES.NO_IMAGE_AVAILABLE)
+  const [bookCoverPhotoUrl, setBookCoverPhotoUrl] = React.useState<string>(bookData.book_cover as string || IMAGES.NO_IMAGE_AVAILABLE)
   const [uploadBookCoverProgress, setUploadBookCoverProgress] = React.useState<number>(0)
-  const [bookPdfFileUrl, setBookPdfFileUrl] = React.useState<string>(bookData.bookPdfFile || '')
+  const [bookPdfFileUrl, setBookPdfFileUrl] = React.useState<string>(bookData?.file || '')
   const [selectedFileName, setSelectedFileName] = React.useState<string>(bookData.title + ' file' || 'No file selected')
   const hasBookPdf = bookPdfFileUrl != ''
   const [uploadBookPdfProgress, setUploadBookPdfProgress] = React.useState<number>(0)
@@ -49,6 +49,14 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     setBookData({
       ...bookData,
       bookSummary: descriptionValue
+    })
+  }
+
+  const handleUpdateBookAuthor = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const authorValue = event.currentTarget.value
+    setBookData({
+      ...bookData,
+      author: authorValue
     })
   }
 
@@ -182,6 +190,14 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     setError(true)
     return
   }
+  
+  if(bookData.author === '' || bookData.author  === undefined){
+    setInProgress(false)
+    setErrorMessage('Please add a book author')
+    setError(true)
+    return
+  }
+
   if(bookData?.tags === '' || bookData?.tags === undefined){
     setInProgress(false)
     setErrorMessage('Please add a tags')
@@ -209,12 +225,14 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     description: bookData.bookSummary,
     book_cover: bookCoverPhotoUrl,
     file: bookPdfFileUrl,
+    author: bookData?.author,
     createdAt: serverTimestamp()
   }
 
   try {
-    const bookId = bookData.bookId as string
-    await setDoc(doc(db, "books", bookId.substring(1)), payload).then((response: any) => {
+    const bookId = bookDetails?.docId as string ?? ''
+
+    await setDoc(doc(db, "books", bookId), payload).then((response: any) => {
       setError(false)
       setInProgress(false)
       setSuccessMessage('Updated book data successfully.')
@@ -230,6 +248,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
   } catch (error: any) {
     setSuccess(false)
     setInProgress(false)
+    console.log(error)
     setErrorMessage('Please check your internet connection.')
     setError(true)
   }
@@ -237,7 +256,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
  }
 
   return (
-    <Dialog open={openEditBookDialog} onClose={handleCloseEditBookDialog}>
+    <Dialog open={openEditBookDialog} onClose={handleCloseEditBookDialog} fullWidth maxWidth="md">
           <DialogTitle variant='h3'>Edit book</DialogTitle>
           <DialogContent>
              {
@@ -257,7 +276,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
              }
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <Image src={bookCoverPhotoUrl} alt='book cover'  height={300} width={300}/>
+                <Image src={bookCoverPhotoUrl} alt='book cover' height={500} width={450}/>
                 <Button startIcon={<CloudUploadIcon />} component='label' variant='outlined' onChange={(e) => handleOnEditImage(e)}>
                   CHANGE COVER
                   <input hidden accept="image/*" type="file" onChange={pickBookCoverPhotoFile}/>
@@ -273,7 +292,18 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                     fullWidth
                     variant="outlined"
                     disabled
-                    defaultValue={bookData.bookId}
+                    defaultValue={bookData?.docId as string ?? "Not set"}
+                />
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Publication date"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    disabled
+                    defaultValue={bookData.publishedDate ?? 'Not set'}
                 />
                 <TextField
                 autoFocus
@@ -283,8 +313,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                 type="text"
                 fullWidth
                 variant="outlined"
-                defaultValue={bookData.title}
-                
+                defaultValue={bookData?.title as string ?? ''}
                 onChange={handleUpdateBookTitle}
               />
               <TextField
@@ -296,8 +325,20 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                 fullWidth
                 variant="outlined"
                 multiline
-                defaultValue={bookData.bookSummary || 'No Summary'}
+                defaultValue={bookData?.bookSummary || 'No Summary'}
                 onChange={handleUpdateBookDescription}
+              />
+               <TextField
+                autoFocus
+                margin="dense"
+                id="author"
+                label="Author"
+                type="text"
+                fullWidth
+                variant="outlined"
+                multiline
+                defaultValue={bookData?.author || 'Uknown'}
+                onChange={handleUpdateBookAuthor}
               />
               <TextField
                 autoFocus

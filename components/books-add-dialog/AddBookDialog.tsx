@@ -10,6 +10,12 @@ import { firebaseAuthMessageConverter, shortenSentence } from '../../utils/helpe
 import { db } from '../../services/firebase-config';
 import { increment, serverTimestamp } from 'firebase/firestore';
 import { collection, query, where, getDocs, addDoc, setDoc, doc} from "firebase/firestore";
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import Stack from '@mui/material/Stack';
+import moment from 'moment'
 
 interface AddBookDialogProps  {
     openAddBookDialog: boolean,
@@ -24,8 +30,6 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
   const [success, setSuccess] = React.useState<boolean>(false)
   const [successMessage, setSuccessMessage] = React.useState<string>('')
   const [inProgress, setInProgress] = React.useState<boolean>(false)
-
-
   const [bookData, setBookData] = React.useState<any>({})
   const [bookCoverPhotoUrl, setBookCoverPhotoUrl] = React.useState<string>(IMAGES.NO_IMAGE_AVAILABLE)
   const [uploadBookCoverProgress, setUploadBookCoverProgress] = React.useState<number>(0)
@@ -47,6 +51,22 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
     setBookData({
       ...bookData,
       description: descriptionValue
+    })
+  }
+
+  const handleUpdateBookAuthor = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const authorValue = event.currentTarget.value
+    setBookData({
+      ...bookData,
+      author: authorValue
+    })
+  }
+
+  const handleUpdateBookPublishedDate = (value: string, keyboardInputValue: string) => {
+    const convertedToDateValue = moment(new Date(value)).format('YYYY-MM-DD')
+    setBookData({
+      ...bookData,
+      publishedDate: convertedToDateValue
     })
   }
 
@@ -180,6 +200,46 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
       setError(true)
       return
     }
+    if(bookData.author === '' || bookData.author === undefined){
+      setInProgress(false)
+      setErrorMessage('Please add an author')
+      setError(true)
+      return
+    }
+
+    if(bookData.publishedDate === '' || bookData.publishedDate === undefined){
+      setInProgress(false)
+      setErrorMessage('Please add date published')
+      setError(true)
+      return
+    }
+
+    const bookPublishedDate = bookData.publishedDate as string ?? ''
+    const isValidDate = moment(bookPublishedDate).isValid()
+    
+    const currentDate = moment().format('YYYY,MM')
+    const providedDate = moment(new Date(bookPublishedDate)).format('YYYY,MM')
+
+    var a = moment([currentDate]);
+    var b = moment([providedDate]);
+
+    const dateDifference = a.diff(b, 'years') as number ?? 0
+    const isWithInFiveYears = dateDifference <= 5
+    
+    if(!isValidDate){
+      setInProgress(false)
+      setErrorMessage('Please add a valid date')
+      setError(true)
+      return
+    }
+
+    if(!isWithInFiveYears){
+      setInProgress(false)
+      setErrorMessage('Cannot add book published more than five years')
+      setError(true)
+      return
+    }
+
     if(bookData?.tags === '' || bookData?.tags === undefined){
       setInProgress(false)
       setErrorMessage('Please add a tags')
@@ -200,7 +260,7 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
       setError(true)
       return
     }
-
+    
     const payload = {
       ...bookData,
       book_cover: bookCoverPhotoUrl,
@@ -295,6 +355,29 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
                 onChange={handleUpdateBookDescription}
                 value={bookData?.description || ''}
               />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="author"
+                label="Author"
+                type="text"
+                fullWidth
+                variant="outlined"
+                multiline
+                onChange={handleUpdateBookAuthor}
+                value={bookData?.author || ''}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Stack spacing={3}>
+                  <DesktopDatePicker
+                    label="Publication date"
+                    inputFormat="MM/DD/YYYY"
+                    value={bookData?.publishedDate || ''}
+                    onChange={(value: any, keyboardInputValue: any) => handleUpdateBookPublishedDate(value, keyboardInputValue)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Stack>
+              </LocalizationProvider>
               <TextField
                 autoFocus
                 margin="dense"

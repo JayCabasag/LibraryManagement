@@ -9,7 +9,8 @@ interface AdminListProps {
     adminId: string,
     adminType: string,
     adminProfileImage: string,
-    adminStatus: string
+    adminStatus: string,
+    handleRefreshAdminList: () => void
 }
 
 enum ADMIN_TYPE {
@@ -19,12 +20,13 @@ enum ADMIN_TYPE {
   REQUESTIONG_FOR_ADMIN = 'requesting'
 }
 
-const AdminList = ({fullname, adminId, adminType, adminProfileImage, adminStatus}: AdminListProps) => {
+const AdminList = ({fullname, adminId, adminType, adminProfileImage, adminStatus, handleRefreshAdminList}: AdminListProps) => {
   const hasHeadAdminType = adminStatus === ADMIN_TYPE.HEAD_ADMIN
 
   const [showEditAdminDialog, setShowEditAdminDialog] = React.useState<boolean>(false)
   const [showDeleteAdminDialog, setShowDeleteAdminDialog] = React.useState<boolean>(false)
   
+
   const handleShowEditAdminDialog =  () => {
     setShowEditAdminDialog(true)
   }
@@ -39,6 +41,16 @@ const AdminList = ({fullname, adminId, adminType, adminProfileImage, adminStatus
     setShowDeleteAdminDialog(false)
   }
 
+  const handleCloseAfterDeleteAdminDialog = () => {
+    setShowDeleteAdminDialog(false)
+    alert('Deleted' + adminId + ' ')
+  }
+
+  const handleCloseAfterEditAdminDialog = () => {
+    setShowEditAdminDialog(false)
+    handleRefreshAdminList()
+  }
+
   return (
     <Card sx={{ minWidth: '100%', display: 'flex', flexDirection: 'row'}} elevation={2}>
      {/* // Show dialog to edit Admin */}
@@ -49,6 +61,7 @@ const AdminList = ({fullname, adminId, adminType, adminProfileImage, adminStatus
           adminProfileImage={adminProfileImage}
           showEditAdminDialog={showEditAdminDialog}
           handleCloseEditAdminDialog={handleCloseEditAdminDialog}
+          handleCloseAfterEditAdminDialog={handleCloseAfterEditAdminDialog}
         />
 
       {/* Show dialog to delete admin */}
@@ -59,6 +72,7 @@ const AdminList = ({fullname, adminId, adminType, adminProfileImage, adminStatus
           adminProfileImage={adminProfileImage}
           showDeleteAdminDialog={showDeleteAdminDialog}
           handleCloseDeleteAdminDialog={handleCloseDeleteAdminDialog}
+          handleCloseAfterDeleteAdminDialog={handleCloseAfterDeleteAdminDialog}
         />
         
     <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>

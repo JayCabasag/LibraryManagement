@@ -1,7 +1,9 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Autocomplete} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Autocomplete, Alert} from '@mui/material'
 import {IMAGES} from '../../utils/app_constants'
 import Image from 'next/image'
+import { useAuth } from '../../context/AuthContext'
+import { firebaseAuthMessageConverter } from '../../utils/helpers'
 interface EditAdminDialogProps {
     fullname: string
     adminId: string
@@ -9,26 +11,77 @@ interface EditAdminDialogProps {
     adminProfileImage: string
     showEditAdminDialog: boolean
     handleCloseEditAdminDialog: () => void
+    handleCloseAfterEditAdminDialog: () => void
 }
 
-const EditAdminDialog = ({ fullname, adminId, adminType,adminProfileImage,showEditAdminDialog, handleCloseEditAdminDialog} : EditAdminDialogProps) => {
+const EditAdminDialog = ({ fullname, adminId, adminType,adminProfileImage,showEditAdminDialog, handleCloseEditAdminDialog, handleCloseAfterEditAdminDialog} : EditAdminDialogProps) => {
     
-    const adminTypeOptions = ['Head Admin', 'Admin', 'Staff']
+    const { reAuthenticateUser, user, updateAdminRank, getAdminStatus} = useAuth()
+    const [currentAdminRank, setCurrentAdminRank] = React.useState<string>('')
+  
+    React.useEffect(() => {
+      const currentAdminStatus = async (uid: string) => {
+        await getAdminStatus(uid).then((response: any) => {
+          setCurrentAdminRank(response)
+        })
+      }
+      currentAdminStatus(user.uid)
+    }, [user.uid])
+
+    const adminTypeOptions = currentAdminRank === 'head admin' ? ['head admin', 'admin', 'staff', 'requesting'] : ['staff', 'requesting']
 
     const [selectedAdminType, setSelectedAdminType] = React.useState<string | null>(adminType);
     const [inputValue, setInputValue] = React.useState('');
-  
+    const [error, setError] = React.useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = React.useState<string>('')
+    const [adminPassword, setAdminPassword] = React.useState<string>('')
+
+    const handleSaveAdminDataChanges = async () => {
+      setError(false)
+      if(adminType === inputValue){
+        setErrorMessage('Make sure to select a different admin rank')
+        setError(true)
+        return
+      }
+      if(adminPassword === ''){
+        setError(true)
+        setErrorMessage('Please input your password')
+        return
+      }
+
+      reAuthenticateUser(user.email, adminPassword).then((response: any) => {
+        updateAdminRank(adminId, inputValue).then(() => {
+          handleCloseAfterEditAdminDialog()
+          setError(false)
+        })
+      }).catch((error: any) => {
+        const firebaseErrorMessage = firebaseAuthMessageConverter(error.code)
+        setErrorMessage(firebaseErrorMessage)
+        setError(true)
+      })
+    }
+
+    const handleUpdateAdminPassword = (event: any) => {
+      const passwordValue = event?.target?.value
+      setAdminPassword(passwordValue)
+    }
+
     return (
     <Dialog open={showEditAdminDialog}>
           <DialogTitle variant='h3'>Edit admin rank</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              You can only change the rank of an Admin
+              {
+                !error && (<Alert severity='warning'>You can only change the rank of an admin</Alert>)
+              }
+              {
+                error && (<Alert severity='error'>{errorMessage}</Alert>)
+              }
             </DialogContentText>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
                 <Image
-                    src={IMAGES.NO_IMAGE_AVAILABLE}
+                    src={adminProfileImage ?? IMAGES.NO_IMAGE_AVAILABLE}
                     alt='profile'
                     height={300}
                     width={300}
@@ -79,13 +132,14 @@ const EditAdminDialog = ({ fullname, adminId, adminType,adminProfileImage,showEd
                     fullWidth
                     variant="outlined"
                     helperText='Enter password to save changes'
+                    onChange={(event: any) => handleUpdateAdminPassword(event)}
                 />
               </Box>
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseEditAdminDialog}>Cancel</Button>
-            <Button onClick={handleCloseEditAdminDialog}>Save</Button>
+            <Button onClick={handleSaveAdminDataChanges}>Save</Button>
           </DialogActions>
         </Dialog>
   )

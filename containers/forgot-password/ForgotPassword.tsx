@@ -1,23 +1,43 @@
 import React, {useState} from 'react'
-import {Box, Container, Typography, Paper, Button, TextField, Dialog, Link, Card} from '@mui/material'
+import {Box, Container, Typography, Paper, Button, TextField, Dialog, Link, Card, Alert} from '@mui/material'
 import classes from './style'
 import { useRouter } from 'next/router';
+import { useAuth } from '../../context/AuthContext';
 
 const ForgotPassword = () => {
 
+  const {sendPasswordResetToEmail} = useAuth()
   const [showLoginSuccessDialog, setShowLoginSuccessDialog] = useState<boolean>(false)
-
-  const router = useRouter()  
-  const goToRegister = () => {
-    router.push('/register')
-  }
-
-  const handleLogin = () => {
-    router.push('/homepage')
-  }
+  const [error, setError] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [success, setSuccess] = useState<boolean>(false)
+  const [email, setEmail] = useState<string>('')
 
   const handleCloseLoginSuccessDialog = () => {
     setShowLoginSuccessDialog(showLoginSuccessDialog => !showLoginSuccessDialog)
+  }
+
+  const handleUpdateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const textValue = event?.target?.value
+    setEmail(textValue)
+  }
+
+  const handleSendToEmail = async () => {
+    setError(false)
+    setSuccess(false)
+    try {
+      await sendPasswordResetToEmail(email).then(() => {
+        setSuccess(true)
+      }).catch((error: any) => {
+        if(error.code === 'auth/missing-email'){
+          setErrorMessage('Email does not exist.')
+          setError(true)
+        }
+      })
+    } catch (error: any) {
+      setErrorMessage('Please check your internet connection.')
+      setError(true)
+    }
   }
 
   return (
@@ -41,8 +61,14 @@ const ForgotPassword = () => {
             <Typography variant='h6'>
                 Forgot Password
             </Typography>
-            <TextField id="outlined-basic" label="Email" variant="outlined" type='text' sx={classes.inputTextField} />
-            <Button variant='contained' sx={classes.sendButton} onClick={handleLogin}>
+            {
+              error && <Alert severity='error'>{errorMessage}</Alert>
+            }
+            {
+              success && <Alert severity='success'>Reset password link has been sent to your email</Alert>
+            }
+            <TextField id="outlined-basic" label="Email" variant="outlined" type='text' sx={classes.inputTextField} onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateEmail(event)}/>
+            <Button variant='contained' sx={classes.sendButton} onClick={handleSendToEmail}>
                 Send via email
             </Button>
             <Link href='/login'>Sign in</Link>

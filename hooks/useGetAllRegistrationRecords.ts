@@ -3,27 +3,28 @@ import { collection, query, where, getDocs, limit, orderBy } from "firebase/fire
 import { db } from '../services/firebase-config';
 
 
-interface UseGetProfessorsUserDataProps {
+interface UseGetAllRegistrationRecordsProps  {
     maxUserResultsLimit: number,
     filterBy?: string
 }
 
-const useGetProfessorsUserData  = ({maxUserResultsLimit, filterBy ='name'} : UseGetProfessorsUserDataProps) => {
+const useGetAllRegistrationRecords  = ({maxUserResultsLimit, filterBy ='name'} : UseGetAllRegistrationRecordsProps) => {
     
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
-    const [professorUsersList, setProfessorUsersList] = React.useState<any[]>([])
-    
+    const [overallTransactions, setOverallTransactions] = React.useState<any[]>([])
+
+
     React.useEffect(() => {
         const getStudentsUsersDataFromFirestore = async () => {
             setIsLoading(true)
            // This is to get books data from firestore
            let professorUsers: any[] = []
-           const queryUsers = query(collection(db, "users"), where("type","==","professor"), limit(maxUserResultsLimit));
+           const queryUsers = query(collection(db, "transactions"), limit(maxUserResultsLimit));
     
            await getDocs(queryUsers).then((querySnapshotForUsers) => {
                 querySnapshotForUsers?.forEach((doc) => {
                 professorUsers.push({...doc.data(), docId: doc.id})
-                setProfessorUsersList([...professorUsers])
+                setOverallTransactions([...professorUsers])
                 setIsLoading(false)
               });
            }).catch((error: any) => {
@@ -37,8 +38,8 @@ const useGetProfessorsUserData  = ({maxUserResultsLimit, filterBy ='name'} : Use
 
     return {
         isLoading,
-        professorUsersList
+        overallTransactions
     }
 }
 
-export default useGetProfessorsUserData 
+export default useGetAllRegistrationRecords

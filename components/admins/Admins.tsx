@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@mui/icons-material'
-import { Box, Typography, Menu, MenuItem, IconButton, Divider} from '@mui/material'
+import { Box, Typography, Menu, MenuItem, IconButton, Divider, setRef} from '@mui/material'
 import React from 'react'
 import AdminStaffList from '../admin-staff-list'
 import AdminList from '../admin-list'
@@ -9,14 +9,16 @@ import InfoIcon from '@mui/icons-material/Info';
 import { IMAGES } from '../../utils/app_constants'
 import useGetAdminData from '../../hooks/useGetAdminData'
 import { useAuth } from '../../context/AuthContext'
+import { usePreviousMonthDisabled } from '@mui/x-date-pickers/internals/hooks/date-helpers-hooks'
 
 const Admins = () => {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [adminStatus, setAdminStatus] = React.useState<string>('admin')
+  const [refresh, setRefresh] = React.useState<boolean>(false)
   const open = Boolean(anchorEl);
 
-  const { headAdminList, adminList, staffList, staffRequestList } = useGetAdminData()
+  const { headAdminList, adminList, staffList, staffRequestList } = useGetAdminData({refresh})
   const {user, getAdminStatus} = useAuth()
 
   const hasStaffList = staffList.length > 0
@@ -39,6 +41,9 @@ const Admins = () => {
     })
   }, [])
 
+  const handleRefreshAdminList = async () => {
+    setRefresh(prevState => !prevState)
+  }
 
   return (
     <Box sx={classes.adminMainContainer}>
@@ -73,12 +78,12 @@ const Admins = () => {
           <Box sx={classes.adminListContainer}>
             {
               headAdminList.map((data: any, index: number) => {
-                return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus}/>
+                return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
               })
             }
             {
               adminList.map((data: any, index: number) => {
-                return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus}/>
+                return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
               })
             }
           </Box>
@@ -87,7 +92,7 @@ const Admins = () => {
             <Typography textAlign={'center'} variant='h6' fontWeight={'bold'}>Staff ({staffList.length})</Typography>
             {
               staffList.map((data: any, index: number) => {
-                return <AdminStaffList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status} adminProfileImage={data.profileURL} adminStatus={adminStatus}/>
+                return <AdminStaffList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status} adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
               })
             }
             {
@@ -101,7 +106,7 @@ const Admins = () => {
             <Typography textAlign={'center'} variant='h6'  fontWeight={'bold'}>Staff Approval Request ({staffRequestList.length})</Typography>
             {
               staffRequestList.map((data: any, index: number)=> {
-                return <AdminApprovalRequestList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus}/>
+                return <AdminApprovalRequestList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
               })
             }
             {

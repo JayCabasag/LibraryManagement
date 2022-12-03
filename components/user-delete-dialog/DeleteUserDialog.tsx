@@ -4,10 +4,11 @@ import {COLORS} from '../../utils/app_constants'
 interface  DeleteUserDialog   {
     openDeleteUserDialog: boolean,
     userDetails: Object,
-    handleCloseDeleteUserDialog: () => void
+    handleCloseDeleteUserDialog: () => void,
+    handleCloseAfterDelete: () => void
 }
 
-const DeleteUserDialog = ({openDeleteUserDialog, userDetails, handleCloseDeleteUserDialog} :  DeleteUserDialog ) => {
+const DeleteUserDialog = ({openDeleteUserDialog, userDetails, handleCloseDeleteUserDialog, handleCloseAfterDelete} :  DeleteUserDialog ) => {
   return (
     <Dialog open={openDeleteUserDialog} onClose={handleCloseDeleteUserDialog}>
           <DialogTitle variant='h3'>Delete User</DialogTitle>
@@ -19,7 +20,7 @@ const DeleteUserDialog = ({openDeleteUserDialog, userDetails, handleCloseDeleteU
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteUserDialog}>Cancel</Button>
-            <Button onClick={handleCloseDeleteUserDialog}>Continue</Button>
+            <Button onClick={ handleCloseAfterDelete}>Continue</Button>
           </DialogActions>
         </Dialog>
   )

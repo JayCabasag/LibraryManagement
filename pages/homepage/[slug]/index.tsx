@@ -15,9 +15,8 @@ import {SxProps } from '@mui/material'
 import Dashboard from '../../../components/dashboard'
 import Books from '../../../components/books'
 import Admins from '../../../components/admins'
-import Professors from '../../../components/professors'
 import Profile from '../../../components/profile'
-import Students from '../../../components/students'
+import Users from '../../../components/users'
 import GridViewIcon from '@mui/icons-material/GridView';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import PersonIcon from '@mui/icons-material/Person';
@@ -28,8 +27,8 @@ import { IMAGES, COLORS } from '../../../utils/app_constants'
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
-import { textTransform } from '@mui/system';
-
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import Records from '../../../components/records';
 
 const DRAWER_WIDTH = 300;
 const PROFILE_IMAGE_SIZES = '50'
@@ -312,20 +311,19 @@ const Index = () =>  {
                 </ListItem>
 
                 <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleGoTo('/homepage/professors')}>
-                        <ListItemIcon>
-                        <PersonOutlineIcon /> 
-                        </ListItemIcon>
-                    <ListItemText primary={'Professors'} />
-                        </ListItemButton>
-                </ListItem>
-
-                <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleGoTo('/homepage/students')}>
+                    <ListItemButton onClick={() => handleGoTo('/homepage/users')}>
                     <ListItemIcon>
                         <PersonOutlineIcon /> 
                     </ListItemIcon>
-                    <ListItemText primary={'Students'} />
+                    <ListItemText primary={'Users'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => handleGoTo('/homepage/records')}>
+                    <ListItemIcon>
+                        <HowToRegIcon /> 
+                    </ListItemIcon>
+                    <ListItemText primary={'Records'} />
                     </ListItemButton>
                 </ListItem>
         </List>
@@ -354,13 +352,13 @@ const Index = () =>  {
                 )
             }
                 {
-                slug === 'professors' && (
-                    <Professors />
+                slug === 'users' && (
+                    <Users />
                 )
             }
                 {
-                slug === 'students' && (
-                    <Students />
+                slug === 'records' && (
+                    <Records />
                 )
             }
                 {

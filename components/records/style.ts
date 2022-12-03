@@ -1,7 +1,7 @@
 import { SxProps } from "@mui/material"
 
 const classes = {
-    professorMainContainer: {
+    studentMainContainer: {
         marginLeft: 5,
         marginRight: 5, 
         position: 'relative',
@@ -9,7 +9,7 @@ const classes = {
         flexDirection: "column",
         width: '100%'
     },
-    professorBodyContainer: {
+    studentBodyContainer: {
         overflowY: 'auto',
         overflowX: 'hidden',
         width: '100%',
@@ -21,26 +21,33 @@ const classes = {
         marginTop: 1,
         padding: 1
     },
+    searchContainer: {
+        display: 'flex',
+        width: '100%',
+        gap: 1
+    },
     searchTextfield: {
         flexGrow: 1,
         '& .MuiInputBase-root': {
             height: 48
         }
     },
-    searchContainer: {
-        display: 'flex',
-        width: '100%',
-        gap: 1
-    },
     searchButton: {
         paddingLeft: 5,
         paddingRight: 5
     },
-    professorListContainer: {
+    studentListContainer: {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
         gap: 1
+    },
+    recordListContainer: {
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        boxShadow: 1, 
+        padding: 2
     }
 } as Record<string, SxProps>
 

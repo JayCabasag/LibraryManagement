@@ -1,5 +1,6 @@
 import { Box, Typography, Grid} from '@mui/material'
 import React from 'react'
+import useGetAdminData from '../../hooks/useGetAdminData'
 import useGetDashboardData from '../../hooks/useGetDashboardData'
 import Card from '../card'
 import classes from './style'
@@ -7,6 +8,8 @@ import classes from './style'
 const Dashboard = () => {
   
   const { overallUsersTotal, totalBooks, studentUsersTotal, professorUsersTotal, overallTransactionsTotal } = useGetDashboardData()
+  const [refresh] = React.useState<boolean>(true)
+  const {totalAdmins } = useGetAdminData({refresh})
 
   return (
     <Box sx={classes.dashboardMainContainer}>
@@ -22,16 +25,13 @@ const Dashboard = () => {
               <Card routeName='books' title='Total Books' total={totalBooks}/>
             </Grid>
             <Grid item xs={4}>
-              <Card routeName='students' title='Student Users' total={studentUsersTotal}/>
+              <Card routeName='admins' title='Admins' total={totalAdmins}/>
             </Grid>
           </Grid>
 
           <Grid container spacing={3} columns={12}>
             <Grid item xs={4}>
-              <Card routeName='professors' title='Professor Users' total={professorUsersTotal}/>
-            </Grid>
-            <Grid item xs={4}>
-              <Card routeName='books' title='Transactions' total={overallTransactionsTotal}/>
+              <Card routeName='books' title='Records' total={overallTransactionsTotal}/>
             </Grid>
           </Grid>
        </Box>

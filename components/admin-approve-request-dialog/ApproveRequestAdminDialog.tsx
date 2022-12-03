@@ -12,9 +12,10 @@ interface EditAdminDialogProps {
     adminProfileImage: string
     showApproveAdminRequestDialog: boolean
     handleCloseApproveAdminRequestDialog: () => void
+    handleRefreshAdminList: () => void
 }
 
-const  ApproveAdminRequestDialog = ({ fullname, adminId, adminType,adminProfileImage,showApproveAdminRequestDialog, handleCloseApproveAdminRequestDialog} : EditAdminDialogProps) => {
+const  ApproveAdminRequestDialog = ({ fullname, adminId, adminType,adminProfileImage,showApproveAdminRequestDialog, handleCloseApproveAdminRequestDialog, handleRefreshAdminList} : EditAdminDialogProps) => {
     
     const adminTypeOptions = ['admin', 'staff', 'requesting']
 
@@ -48,6 +49,7 @@ const  ApproveAdminRequestDialog = ({ fullname, adminId, adminType,adminProfileI
       reAuthenticateUser(user.email, adminPassword).then((response: any) => {
         updateAdminRank(adminId, inputValue).then((response: any) => {
           handleCloseApproveAdminRequestDialog()
+          handleRefreshAdminList()
           setError(false)
         }).catch((error: any) => {
           const firebaseErrorMessage = firebaseAuthMessageConverter(error.code)

@@ -2,12 +2,17 @@ import React from 'react'
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from '../services/firebase-config';
 
-const useGetAdminData = () => {
+interface UseGetAdminDataProps {
+   refresh: boolean
+}
+
+const useGetAdminData = ({refresh} : UseGetAdminDataProps) => {
     
     const [headAdminList, setHeadAdminList] = React.useState<any>([])
     const [adminList, setAdminList] = React.useState<any>([])
     const [staffList, setStaffList] = React.useState<any>([])
     const [staffRequestList, setStaffRequestList] = React.useState<any>([])
+    const [totalAdmins, setTotalAdmins] = React.useState<number>(0)
 
     React.useEffect(() => {
         const getAdminDataFromFirestore = async () => {
@@ -44,6 +49,7 @@ const useGetAdminData = () => {
             return  hasRequestingStaffType
          })
 
+         setTotalAdmins(admins?.length)
          setHeadAdminList(headAdminList)
          setAdminList(adminList)
          setStaffList(staffList)
@@ -51,13 +57,14 @@ const useGetAdminData = () => {
 
         }
         getAdminDataFromFirestore()
-      }, [])
+      }, [refresh])
 
   return {
     adminList,
     staffList,
     staffRequestList,
-    headAdminList
+    headAdminList,
+    totalAdmins
   }
 }
 

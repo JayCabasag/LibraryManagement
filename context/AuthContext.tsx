@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useId, useState} from 'react'
-import {EmailAuthProvider, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, User, reauthenticateWithCredential} from 'firebase/auth'
+import {EmailAuthProvider, onAuthStateChanged, createUserWithEmailAndPassword,sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile, User, reauthenticateWithCredential, updateEmail, updatePassword} from 'firebase/auth'
 import { auth, db } from '../services/firebase-config'
 import AuthenticatingLoading from '../components/loading/AuthenticatingLoading'
 import { doc, getDoc, getFirestore, query, collection, where, getDocs, addDoc, serverTimestamp, setDoc, updateDoc, deleteDoc
@@ -56,6 +56,21 @@ export const AuthContextProvider = ({children}: {children: React.ReactNode}) => 
             displayName, 
             photoURL
         })
+    }
+
+    const updateUserEmail = (email: string) => {
+        const currentUser = auth.currentUser as User
+        return updateEmail(currentUser, email)
+    }
+
+    const sendPasswordResetToEmail = (email: string) => {
+        return sendPasswordResetEmail(auth, email)
+    }
+    
+
+    const updateUserPassword = (newPassword: string) => {
+        const currentUser = auth.currentUser as User
+        return updatePassword(currentUser, newPassword)
     }
 
     const getAdminStatus = async (uid: string) => {
@@ -121,7 +136,10 @@ export const AuthContextProvider = ({children}: {children: React.ReactNode}) => 
                 reAuthenticateUser,
                 updateAdminRank,
                 deleteAdminRequest,
-                checkIfAdminHasDatabaseRecord
+                checkIfAdminHasDatabaseRecord,
+                updateUserEmail,
+                updateUserPassword,
+                sendPasswordResetToEmail
             }}>
             {isAuthenticating ? <AuthenticatingLoading message={loadingMessage}/> : children}
         </AuthContext.Provider>

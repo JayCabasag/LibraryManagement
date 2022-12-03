@@ -9,7 +9,8 @@ interface AdminApprovalRequestListProps {
     adminId: string,
     adminType: string,
     adminProfileImage: string,
-    adminStatus: string
+    adminStatus: string,
+    handleRefreshAdminList: () => void
 }
 enum ADMIN_TYPE {
   HEAD_ADMIN = 'head admin',
@@ -19,7 +20,7 @@ enum ADMIN_TYPE {
 }
 
 
-const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileImage, adminStatus}: AdminApprovalRequestListProps) => {
+const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileImage, adminStatus, handleRefreshAdminList}: AdminApprovalRequestListProps) => {
   
   const [showDeclineAdminRequestDialog, setShowDeclineAdminRequestDialog] = React.useState<boolean>(false)
   const [showApproveAdminRequestDialog, setShowApproveAdminRequestDialog] = React.useState<boolean>(false)
@@ -51,6 +52,7 @@ const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileIma
             adminProfileImage={adminProfileImage}
             showDeclineAdminRequestDialog={showDeclineAdminRequestDialog}
             handleCloseDeclineAdminRequestDialog={handleCloseDeclineAdminRequestDialog}
+            handleRefreshAdminList={handleRefreshAdminList}
           />
 
         {/* Show dialog to delete admin */}
@@ -61,6 +63,7 @@ const AdminApprovalRequestList = ({fullname, adminId, adminType, adminProfileIma
             adminProfileImage={adminProfileImage}
             showApproveAdminRequestDialog={showApproveAdminRequestDialog}
             handleCloseApproveAdminRequestDialog={handleCloseApproveAdminRequestDialog}
+            handleRefreshAdminList={handleRefreshAdminList}
           />
 
     <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>
