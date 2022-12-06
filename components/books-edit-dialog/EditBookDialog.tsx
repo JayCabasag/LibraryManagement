@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, IconButton} from '@mui/material'
 import Image from 'next/image'
 import {IMAGES} from '../../utils/app_constants'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -9,6 +9,7 @@ import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { increment, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../services/firebase-config';
 import { setDoc, doc } from "firebase/firestore";
+import { Close } from '@mui/icons-material';
 
 interface EditBookDialogProps  {
     openEditBookDialog: boolean,
@@ -257,6 +258,11 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
 
   return (
     <Dialog open={openEditBookDialog} onClose={handleCloseEditBookDialog} fullWidth maxWidth="md">
+          <DialogActions>
+            <IconButton onClick={handleCloseEditBookDialog} sx={{position: 'absolute', top: 20}}>
+              <Close />
+            </IconButton>
+          </DialogActions>
           <DialogTitle variant='h3'>Edit book</DialogTitle>
           <DialogContent>
              {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton, DialogActions, Box, Typography, Button, TextField, Alert} from '@mui/material'
 import Image from 'next/image'
 import {IMAGES} from '../../utils/app_constants'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -16,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Stack from '@mui/material/Stack';
 import moment from 'moment'
+import { Close } from '@mui/icons-material';
 
 interface AddBookDialogProps  {
     openAddBookDialog: boolean,
@@ -306,6 +307,11 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
 
   return (
     <Dialog open={openAddBookDialog} onClose={handleCloseAddBookDialog}>
+          <DialogActions>
+            <IconButton onClick={handleCloseAddBookDialog} sx={{position: 'absolute', top: 20}}>
+              <Close />
+            </IconButton>
+          </DialogActions>
           <DialogTitle variant='h3'>Add new book</DialogTitle>
           <DialogContent>
              {

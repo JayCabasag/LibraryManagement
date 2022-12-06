@@ -47,7 +47,7 @@ const BookList = ({bookData, handleRefreshBookList}: BookListProps) => {
       </Box>
       <Box>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-          {shortenSentence(bookData?.title as string ?? '', 60, '...')} <Typography component={'span'} sx={{color: 'grayText', fontStyle: 'italic', cursor: 'pointer',paddingLeft: 1, paddingRight: 1}}>{bookData?.docId as string ?? 'Not set'}</Typography>
+          {shortenSentence(bookData?.title as string ?? '', 60, '...')} <Typography component={'span'} sx={{color: 'grayText', fontStyle: 'italic', cursor: 'pointer',paddingLeft: 1, paddingRight: 1}}>{bookData?.docId as string ?? bookData?.objectID as string ?? 'Not set'}</Typography>
         </Typography>
         <Typography variant='body1' sx={{fontSize: 15}}>{shortenSentence(bookData?.bookSummary as string ?? '', 60, '...')}</Typography>
         <Box sx={{display: 'flex', gap: 1}}>

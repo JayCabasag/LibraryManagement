@@ -12,6 +12,8 @@ import { db } from '../../services/firebase-config'
 import { serverTimestamp } from 'firebase/firestore';
 import { collection, query, where, getDocs, addDoc, doc, getDoc} from "firebase/firestore";
 import Image from 'next/image'
+import axios from 'axios'
+
 
 const BOOK_LOAD_PER_REFRESH = 50
 
@@ -64,17 +66,21 @@ const Books = () => {
   }
 
   const searchBooks = async (value: string) => {
-    
-    const booksRef = collection(db, "books");
-    const queryForSameBookTitle = query(booksRef, where("title", "==", value));
+    const config = {
+      headers:{
+        'X-Algolia-API-Key': 'abe33f04785a63c7286f8f2d92400ea4',
+        'X-Algolia-Application-Id': 'JXGVNF2YFE'
+      }
+    };
+    const url = `https://JXGVNF2YFE-dsn.algolia.net/1/indexes/books?query=${value}&hitsPerPage=${maxBookResultsLimit}&getRankingInfo=1`;
 
-    const querySnapshot = await getDocs(queryForSameBookTitle);
-    let responseBook: any = []
-    querySnapshot.forEach((doc) => {
-      responseBook.push({docId: doc.id, ...doc.data()});
-    });
-
-    setSearchedBookResults([...responseBook])
+    await axios.get(url, config)
+    .then((res: any)=>{
+      setSearchedBookResults([...res.data.hits])
+    })
+    .catch((err: any)=> {
+      console.log(err)
+    })
   }
 
   const debounceKeyword = useDebouncedCallback((value) => {
