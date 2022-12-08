@@ -1,7 +1,7 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, IconButton, DialogActions, Box, Typography, Button, TextField, Alert} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton, DialogActions, Box, Typography, Button, TextField, Alert, InputAdornment} from '@mui/material'
 import Image from 'next/image'
-import {IMAGES} from '../../utils/app_constants'
+import {GOOGLE_DOCS_PLAYER, IMAGES} from '../../utils/app_constants'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { storage } from '../../services/firebase-config'
 import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -78,6 +78,14 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
     setBookData({
       ...bookData,
       tags: [...uniqueTags]
+    })
+  }
+
+  const handleGoogleDocsLink = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const descriptionValue = event.currentTarget.value
+    setBookData({
+      ...bookData,
+      googleDocsLink: `${GOOGLE_DOCS_PLAYER}${descriptionValue}`
     })
   }
 
@@ -394,6 +402,26 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
                 variant="outlined"
                 helperText="Make sure to add space on each tag"
                 onChange={handleUpdateBookTags}
+              />
+               <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Google docs link for this pdf"
+                type="text"
+                fullWidth
+                variant="outlined"
+                helperText="Make sure to open first on Google docs"
+                onChange={handleGoogleDocsLink}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <Button variant='contained' onClick={() => window.open(bookData?.googleDocsLink ?? GOOGLE_DOCS_PLAYER, '_blank')}>
+                          Check link
+                        </Button>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <Box sx={{display: 'flex', alignItems: 'center', gap: 1, marginTop: 1}}>
                 <Button variant="contained" component="label" size='large'>

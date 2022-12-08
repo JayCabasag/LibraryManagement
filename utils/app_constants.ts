@@ -13,3 +13,5 @@ export const IMAGES = {
 }
 
 export const USER_LOAD_PER_REFRESH = 50
+
+export const GOOGLE_DOCS_PLAYER = 'http://docs.google.com/gview?embedded=true&url='

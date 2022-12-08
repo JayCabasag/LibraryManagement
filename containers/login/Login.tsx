@@ -48,7 +48,7 @@ const Login = () => {
       return setError(true)
     }
 
-    if(password.length <= 7){
+    if(password?.length <= 7){
       setErrorMessage('Password needs to have atleast 8 letters')
       setInProgress(false)
       return setError(true)

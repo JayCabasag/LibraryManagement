@@ -1,7 +1,7 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, IconButton} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, IconButton, InputAdornment} from '@mui/material'
 import Image from 'next/image'
-import {IMAGES} from '../../utils/app_constants'
+import {GOOGLE_DOCS_PLAYER, IMAGES} from '../../utils/app_constants'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { shortenSentence } from '../../utils/helpers';
 import { storage } from '../../services/firebase-config'
@@ -10,6 +10,8 @@ import { increment, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../services/firebase-config';
 import { setDoc, doc } from "firebase/firestore";
 import { Close } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 interface EditBookDialogProps  {
     openEditBookDialog: boolean,
@@ -25,6 +27,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
   const [success, setSuccess] = React.useState<boolean>(false)
   const [successMessage, setSuccessMessage] = React.useState<string>('')
   const [inProgress, setInProgress] = React.useState<boolean>(false)
+  const router = useRouter()
 
   const [bookData, setBookData] = React.useState<any>(bookDetails || {})
   let bookTags: string = bookData?.tags?.reduce((accumulator: string, currentValue: string) => {
@@ -60,6 +63,15 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
       author: authorValue
     })
   }
+
+  const handleGoogleDocsLink = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const descriptionValue = event.currentTarget.value
+    setBookData({
+      ...bookData,
+      googleDocsLink: descriptionValue
+    })
+  }
+
 
   const handleUpdateBookTags = (event: React.ChangeEvent<HTMLInputElement>) => {
     const tagsValue = event.currentTarget.value
@@ -220,6 +232,13 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     return
   }
 
+  if(bookData?.googleDocsLink === GOOGLE_DOCS_PLAYER || bookData?.googleDocsLink === undefined){
+    setInProgress(false)
+    setErrorMessage('Please add a PDF google docs link that is valid')
+    setError(true)
+    return
+  }
+
   const payload = {
     title: bookData.title,
     tags: bookData.tags,
@@ -227,11 +246,13 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     book_cover: bookCoverPhotoUrl,
     file: bookPdfFileUrl,
     author: bookData?.author,
+    googleDocsLink: bookData?.googleDocsLink,
     createdAt: serverTimestamp()
   }
 
+  console.log(payload)
   try {
-    const bookId = bookDetails?.docId as string ?? ''
+    const bookId = bookDetails?.docId as string  ?? bookDetails?.objectID ?? ''
 
     await setDoc(doc(db, "books", bookId), payload).then((response: any) => {
       setError(false)
@@ -250,10 +271,10 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     setSuccess(false)
     setInProgress(false)
     console.log(error)
+    console.log(error)
     setErrorMessage('Please check your internet connection.')
     setError(true)
   }
-
  }
 
   return (
@@ -356,6 +377,27 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                 variant="outlined"
                 defaultValue={bookTags?.substring(1) ?? ''}
                 onChange={handleUpdateBookTags}
+              />
+               <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                type="text"
+                fullWidth
+                variant="outlined"
+                defaultValue={bookData?.googleDocsLink ?? GOOGLE_DOCS_PLAYER}
+                onChange={handleGoogleDocsLink}
+                label="Google docs link for this pdf "
+                helperText={"Make sure to open first on Google docs"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                        <Button variant='contained' onClick={() => window.open(bookData?.googleDocsLink ?? GOOGLE_DOCS_PLAYER, '_blank')}>
+                          Check link
+                        </Button>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <Box sx={{display: 'flex', alignItems: 'center', gap: 1, marginTop: 1}}>
                 <Button variant="contained" component="label" size='large'>
