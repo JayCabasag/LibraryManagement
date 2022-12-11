@@ -62,6 +62,7 @@ const Login = () => {
         // Check if admin has database data
         let admin = authUser.user
         checkIfAdminHasDatabaseRecord(admin.uid, admin.email, admin.displayName, admin.photoURL).then(() => {
+          localStorage?.setItem('uid', admin?.uid ?? '')
           setInProgress(false)
           setErrorMessage('')
           setError(false)

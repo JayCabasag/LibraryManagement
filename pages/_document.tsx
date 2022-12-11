@@ -14,7 +14,6 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <title>Techno Library</title>
-          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <link rel="shortcut icon" href="/tcumobilelibrary.ico" />
           <link rel="preconnect" href="https://fonts.googleapis.com"/>
           <link rel="preconnect" href="https://fonts.gstatic.com"/>
