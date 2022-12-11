@@ -52,7 +52,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     const descriptionValue = event.currentTarget.value
     setBookData({
       ...bookData,
-      bookSummary: descriptionValue
+      description: descriptionValue
     })
   }
 
@@ -319,7 +319,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                     fullWidth
                     variant="outlined"
                     disabled
-                    defaultValue={bookData?.docId as string ?? "Not set"}
+                    defaultValue={bookData?.docId as string ?? bookData?.objectID ?? "Not set"}
                 />
                 <TextField
                     autoFocus
@@ -352,7 +352,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                 fullWidth
                 variant="outlined"
                 multiline
-                defaultValue={bookData?.bookSummary || 'No Summary'}
+                defaultValue={bookData?.bookSummary ?? bookData?.description ?? 'No Summary'}
                 onChange={handleUpdateBookDescription}
               />
                <TextField

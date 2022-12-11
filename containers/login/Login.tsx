@@ -126,7 +126,7 @@ const Login = () => {
 
         <Card sx={classes.loginCardContainer}>
               <CardContent>
-                <Typography variant='h2' textAlign={'center'} mb={3} color={COLORS.RED}>TCU Mobile Library</Typography>
+                <Typography variant='h2' textAlign={'center'} mb={3} color={COLORS.RED}>Techno Library</Typography>
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 1, marginBottom: 2}}>
                   <TextField id="email" label="Email" variant="outlined" type='text' sx={classes.inputTextField} onChange={(e: ChangeEvent<HTMLInputElement>) => {handleUpdateUsernameOrEmailInput(e)}}/>
                   <TextField id="password" label="Password" variant="outlined" type='password' sx={classes.inputTextField}  onChange={(e: ChangeEvent<HTMLInputElement>) => {handleUpdatePasswordInput(e)}}/>

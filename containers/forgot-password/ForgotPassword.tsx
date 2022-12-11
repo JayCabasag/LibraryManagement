@@ -56,7 +56,7 @@ const ForgotPassword = () => {
         </Dialog>
         <Card sx={classes.fieldContainer}>
             <Typography variant="h5" color="initial" textAlign='center' sx={classes.headerText}>
-                TCU Mobile Library
+                Techno Library
             </Typography>
             <Typography variant='h6'>
                 Forgot Password

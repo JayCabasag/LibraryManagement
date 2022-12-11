@@ -220,7 +220,7 @@ const Index = () =>  {
           </IconButton>
           <Toolbar sx={{flex: 1}}>
           <Typography variant="h6" noWrap component="div">
-            TCU Mobile Library
+            Techno Library
           </Typography>
           </Toolbar>
           <Box sx={{display: 'flex', alignItems: 'center', gap: 2 }}>
