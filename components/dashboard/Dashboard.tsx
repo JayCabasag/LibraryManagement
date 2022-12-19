@@ -31,7 +31,7 @@ const Dashboard = () => {
 
           <Grid container spacing={3} columns={12}>
             <Grid item xs={4}>
-              <Card routeName='books' title='Records' total={overallTransactionsTotal}/>
+              <Card routeName='records' title='Records' total={overallTransactionsTotal}/>
             </Grid>
           </Grid>
        </Box>
