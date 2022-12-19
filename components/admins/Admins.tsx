@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@mui/icons-material'
-import { Box, Typography, Menu, MenuItem, IconButton, Divider, setRef} from '@mui/material'
+import { Box, Typography, Menu, MenuItem, IconButton, Divider, setRef, CircularProgress} from '@mui/material'
 import React from 'react'
 import AdminStaffList from '../admin-staff-list'
 import AdminList from '../admin-list'
@@ -18,7 +18,7 @@ const Admins = () => {
   const [refresh, setRefresh] = React.useState<boolean>(false)
   const open = Boolean(anchorEl);
 
-  const { headAdminList, adminList, staffList, staffRequestList } = useGetAdminData({refresh})
+  const {isLoading, headAdminList, adminList, staffList, staffRequestList } = useGetAdminData({refresh})
   const {user, getAdminStatus} = useAuth()
 
   const hasStaffList = staffList.length > 0
@@ -39,7 +39,7 @@ const Admins = () => {
     }).catch(() => {
       setAdminStatus('admin')
     })
-  }, [])
+  }, [user.uid, getAdminStatus])
 
   const handleRefreshAdminList = async () => {
     setRefresh(prevState => !prevState)
@@ -74,45 +74,55 @@ const Admins = () => {
                 </Box>
               </Menu>
        <Box sx={classes.adminBodyContainer}>
-          
-          <Box sx={classes.adminListContainer}>
             {
-              headAdminList.map((data: any, index: number) => {
-                return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
-              })
+              isLoading && (<Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20vh', width: '100%', gap: 2}}>
+              <CircularProgress sx={{height: '40vh', width: '100%'}}/>
+              <Typography>Please wait...</Typography>
+             </Box>)
             }
-            {
-              adminList.map((data: any, index: number) => {
-                return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
-              })
-            }
-          </Box>
 
-          <Box sx={classes.adminListContainer}>
-            <Typography textAlign={'center'} variant='h6' fontWeight={'bold'}>Staff ({staffList.length})</Typography>
             {
-              staffList.map((data: any, index: number) => {
-                return <AdminStaffList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status} adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
-              })
-            }
-            {
-              !hasStaffList && (
-                <Typography>No staff...</Typography>
-              )
-            }
-          </Box>
+              !isLoading && (<>
+                <Box sx={classes.adminListContainer}>
+                {
+                  headAdminList.map((data: any, index: number) => {
+                    return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
+                  })
+                }
+                {
+                  adminList.map((data: any, index: number) => {
+                    return <AdminList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
+                  })
+                }
+              </Box>
 
-          <Box sx={classes.adminListContainer}>
-            <Typography textAlign={'center'} variant='h6'  fontWeight={'bold'}>Staff Approval Request ({staffRequestList.length})</Typography>
-            {
-              staffRequestList.map((data: any, index: number)=> {
-                return <AdminApprovalRequestList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
-              })
+              <Box sx={classes.adminListContainer}>
+                <Typography textAlign={'center'} variant='h6' fontWeight={'bold'}>Staff ({staffList.length})</Typography>
+                {
+                  staffList.map((data: any, index: number) => {
+                    return <AdminStaffList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status} adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
+                  })
+                }
+                {
+                  !hasStaffList && (
+                    <Typography>No staff...</Typography>
+                  )
+                }
+              </Box>
+
+              <Box sx={classes.adminListContainer}>
+                <Typography textAlign={'center'} variant='h6'  fontWeight={'bold'}>Staff Approval Request ({staffRequestList.length})</Typography>
+                {
+                  staffRequestList.map((data: any, index: number)=> {
+                    return <AdminApprovalRequestList key={index} fullname={data.displayName} adminId={data.docId} adminType={data.status}  adminProfileImage={data.profileURL} adminStatus={adminStatus} handleRefreshAdminList={handleRefreshAdminList}/>
+                  })
+                }
+                {
+                  !hasStaffRequestList && (<Typography>No staff request...</Typography>)  
+                }
+              </Box>``
+              </>)
             }
-            {
-              !hasStaffRequestList && (<Typography>No staff request...</Typography>)  
-            }
-          </Box>
        </Box>
     </Box>
   )

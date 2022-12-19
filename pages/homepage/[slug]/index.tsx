@@ -24,11 +24,14 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import {Toolbar, Box, Menu, MenuItem, Avatar, Divider, ListItemIcon, Typography} from '@mui/material'
 import {Logout, Settings} from '@mui/icons-material';
 import { IMAGES, COLORS } from '../../../utils/app_constants'
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import Records from '../../../components/records';
+import { db } from '../../../services/firebase-config';
+import { getDoc, doc } from 'firebase/firestore';
+import AuthenticatingLoading from '../../../components/loading/AuthenticatingLoading';
 
 const DRAWER_WIDTH = 300;
 const PROFILE_IMAGE_SIZES = '50'
@@ -54,9 +57,10 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
 
 const classes = {
   homeContainer: {
-      height: '100vh',
+      height: '85vh',
       width: '100%',
-      display: 'flex'
+      display: 'flex',
+      overflow: 'hidden'
   },
   navbarContainer: {
     display: 'flex',
@@ -153,12 +157,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-const Index = () =>  {
-
+interface IndexProps {
+  authorize: any
+}
+const Index = ({authorize}: IndexProps) =>  {
   const theme = useTheme();
   const [openSidebar, setOpenSidebar] = React.useState(true);
 
   const router = useRouter()
+
   const { slug } = router.query
   const { user, logout, getAdminStatus } = useAuth()
 
@@ -190,7 +197,7 @@ const Index = () =>  {
   }
 
   const [adminName, setAdminName] = useState<string>(user?.displayName || 'Admin')
-  const [adminType, setAdminType] = useState<string>('Admin')
+  const [adminType, setAdminType] = useState<string>('')
 
   useEffect(() => {
     getAdminStatus(user.uid).then((response: any) => {
@@ -204,172 +211,178 @@ const Index = () =>  {
     await logout()
   }
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={openSidebar}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ ...(openSidebar && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Toolbar sx={{flex: 1}}>
-          <Typography variant="h6" noWrap component="div">
-            Techno Library
-          </Typography>
-          </Toolbar>
-          <Box sx={{display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography>{adminName}</Typography>
-              <Box sx={classes.adminWhiteBadge}><Typography sx={{textTransform: 'capitalize'}}>{adminType}</Typography></Box>
-              <Box 
-                sx={classes.profileImageContainer} 
-                onClick={handleClick}
-                aria-controls="user-menu" 
-                aria-haspopup="true"
-               > 
-                <Image alt='profile' src={user.profileURL} onError={({currentTarget}) => {currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE}} height={45} width={45} />
-              </Box>
-            </Box>
-           
-            <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={open}
-              onClose={handleClose}
-              onClick={handleClose}
-              PaperProps={userMenuPaperProps}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-              <Box sx={classes.adminText}>
-                <Typography variant='h6' sx={{textTransform: 'capitalize'}}>{adminType}</Typography>
-              </Box>
-                <MenuItem onClick={() => {handleGoToProfile('/homepage/profile')}}>
-                  <Avatar /> Account Profile
-                </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleLogoutUser}>
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
-            </Menu>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: DRAWER_WIDTH,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: DRAWER_WIDTH,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={openSidebar}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-              <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleGoTo('/homepage/dashboard')}>
-                    <ListItemIcon>
-                        <GridViewIcon /> 
-                    </ListItemIcon>
-                    <ListItemText primary={'Dashboard'} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding >
-                    <ListItemButton onClick={() => handleGoTo('/homepage/books')}>
-                        <ListItemIcon>
-                            <LibraryBooksIcon /> 
-                        </ListItemIcon>
-                        <ListItemText primary={'Books'} />
-                        </ListItemButton>
-                </ListItem>
-        </List>
-        <Divider />
-        <List>
-        <ListItem disablePadding>
-                <ListItemButton onClick={() => handleGoTo('/homepage/admins')}>
-                        <ListItemIcon>
-                            <PersonIcon /> 
-                        </ListItemIcon>
-                        <ListItemText primary={'Admins'} />
-                        </ListItemButton>
-                </ListItem>
+  if(adminType === '' || adminType === 'requesting'){
+    return (
+      <AuthenticatingLoading message={"Please wait..."}/>
+    )
+  }
 
+  return (
+      <Box sx={{ display: 'flex'}}>
+        <CssBaseline />
+        <AppBar position="fixed" open={openSidebar}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ ...(openSidebar && { display: 'none' }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Toolbar sx={{flex: 1}}>
+            <Typography variant="h6" noWrap component="div">
+              Techno Library
+            </Typography>
+            </Toolbar>
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Typography>{adminName}</Typography>
+                <Box sx={classes.adminWhiteBadge}><Typography sx={{textTransform: 'capitalize'}}>{adminType}</Typography></Box>
+                <Box 
+                  sx={classes.profileImageContainer} 
+                  onClick={handleClick}
+                  aria-controls="user-menu" 
+                  aria-haspopup="true"
+                 > 
+                  <Image alt='profile' src={user.profileURL} onError={({currentTarget}) => {currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE}} height={45} width={45} />
+                </Box>
+              </Box>
+             
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={userMenuPaperProps}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <Box sx={classes.adminText}>
+                  <Typography variant='h6' sx={{textTransform: 'capitalize'}}>{adminType}</Typography>
+                </Box>
+                  <MenuItem onClick={() => {handleGoToProfile('/homepage/profile')}}>
+                    <Avatar /> Account Profile
+                  </MenuItem>
+                <Divider />
+                <MenuItem onClick={handleLogoutUser}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          sx={{
+            width: DRAWER_WIDTH,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: DRAWER_WIDTH,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={openSidebar}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
                 <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleGoTo('/homepage/users')}>
-                    <ListItemIcon>
-                        <PersonOutlineIcon /> 
-                    </ListItemIcon>
-                    <ListItemText primary={'Users'} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleGoTo('/homepage/records')}>
-                    <ListItemIcon>
-                        <HowToRegIcon /> 
-                    </ListItemIcon>
-                    <ListItemText primary={'Records'} />
-                    </ListItemButton>
-                </ListItem>
-        </List>
-      </Drawer>
-      <Main open={openSidebar}>
-        <DrawerHeader />
-        <Box sx={classes.homeContainer}>
-            {
-                slug === undefined && (
-                    <Dashboard />
-                )
-            }
-            {
-                slug === 'dashboard' && (
-                    <Dashboard />
-                )
-            }
-                {
-                slug === 'books' && (
-                    <Books />
-                )
-            }
-                {
-                slug === 'admins' && (
-                    <Admins/>
-                )
-            }
-                {
-                slug === 'users' && (
-                    <Users />
-                )
-            }
-                {
-                slug === 'records' && (
-                    <Records />
-                )
-            }
-                {
-                slug === 'profile' && (
-                    <Profile />
-                )
-            }
-            </Box> 
-      </Main>
-    </Box>
-  );
+                      <ListItemButton onClick={() => handleGoTo('/homepage/dashboard')}>
+                      <ListItemIcon>
+                          <GridViewIcon /> 
+                      </ListItemIcon>
+                      <ListItemText primary={'Dashboard'} />
+                      </ListItemButton>
+                  </ListItem>
+                  <ListItem disablePadding >
+                      <ListItemButton onClick={() => handleGoTo('/homepage/books')}>
+                          <ListItemIcon>
+                              <LibraryBooksIcon /> 
+                          </ListItemIcon>
+                          <ListItemText primary={'Books'} />
+                          </ListItemButton>
+                  </ListItem>
+          </List>
+          <Divider />
+          <List>
+          <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleGoTo('/homepage/admins')}>
+                          <ListItemIcon>
+                              <PersonIcon /> 
+                          </ListItemIcon>
+                          <ListItemText primary={'Admins'} />
+                          </ListItemButton>
+                  </ListItem>
+  
+                  <ListItem disablePadding>
+                      <ListItemButton onClick={() => handleGoTo('/homepage/users')}>
+                      <ListItemIcon>
+                          <PersonOutlineIcon /> 
+                      </ListItemIcon>
+                      <ListItemText primary={'Users'} />
+                      </ListItemButton>
+                  </ListItem>
+                  <ListItem disablePadding>
+                      <ListItemButton onClick={() => handleGoTo('/homepage/records')}>
+                      <ListItemIcon>
+                          <HowToRegIcon /> 
+                      </ListItemIcon>
+                      <ListItemText primary={'Records'} />
+                      </ListItemButton>
+                  </ListItem>
+          </List>
+        </Drawer>
+        <Main open={openSidebar}>
+          <DrawerHeader />
+          <Box sx={classes.homeContainer}>
+              {
+                  slug === undefined && (
+                      <Dashboard />
+                  )
+              }
+              {
+                  slug === 'dashboard' && (
+                      <Dashboard />
+                  )
+              }
+                  {
+                  slug === 'books' && (
+                      <Books />
+                  )
+              }
+                  {
+                  slug === 'admins' && (
+                      <Admins/>
+                  )
+              }
+                  {
+                  slug === 'users' && (
+                      <Users />
+                  )
+              }
+                  {
+                  slug === 'records' && (
+                      <Records />
+                  )
+              }
+                  {
+                  slug === 'profile' && (
+                      <Profile />
+                  )
+              }
+              </Box> 
+        </Main>
+      </Box>
+    );
 }
 
 export default Index

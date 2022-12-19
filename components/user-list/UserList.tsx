@@ -55,7 +55,7 @@ const UserList = ({userData, handleRefreshUserList, handleSuccessMessage, handle
       <DeleteUserDialog openDeleteUserDialog={openDeleteUserDialog} userDetails={userData} handleCloseDeleteUserDialog={handleCloseDeleteUserDialog}  handleCloseAfterDelete={handleCloseAfterDelete}/>
      <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>
       <Box>
-        <Image src={userData?.photoURL as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='User profile' onError={({currentTarget})=> currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE} height={75} width={75} />
+        <Image src={userData?.photoUrl as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='User profile' onError={({currentTarget})=> currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE} height={75} width={75} />
       </Box>
       <Box>
         <Box>
@@ -71,7 +71,6 @@ const UserList = ({userData, handleRefreshUserList, handleSuccessMessage, handle
     </CardContent>
     <CardActions>
         <Button size="small" variant='outlined' onClick={handleOpenEditUserDialog}>Review</Button>
-        <Button size="small" variant='contained' onClick={handleOpenDeleteUserDialog}>Delete</Button>
     </CardActions>
   </Card>
   )

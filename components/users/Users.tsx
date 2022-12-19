@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@mui/icons-material'
-import { Box, Typography, TextField, InputAdornment, Button, Alert} from '@mui/material'
+import { Box, Typography, TextField, InputAdornment, Button, Alert, CircularProgress} from '@mui/material'
 import React from 'react'
 import UserList from '../user-list'
 import classes from './style'
@@ -27,7 +27,7 @@ const Users = () => {
     const target = event.currentTarget
 
     if (target.scrollHeight - target.scrollTop === target.clientHeight){
-      console.log('Bottom check if there is still others')
+      setMaxUserResultsLimit(prevState => prevState + USER_LOAD_PER_REFRESH)
     }
   }
 
@@ -116,7 +116,13 @@ const Users = () => {
             }
             <Typography textAlign={'center'} component='h6'>List of Users ({overallUsersList.length.toString()}) </Typography>
             {
-              hasNoUsers && (<Box>No users...</Box>)
+              isLoading && (<Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20vh', width: '100%', gap: 2}}>
+              <CircularProgress sx={{height: '20vh', width: '100%'}}/>
+              <Typography>Please wait...</Typography>
+             </Box>)
+            }
+            {
+             !isLoading && hasNoUsers && (<Box>No users...</Box>)
             }
             {
              !isLoading && overallUsersList.map((data: any, index: number) => {

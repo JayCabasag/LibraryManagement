@@ -13,20 +13,23 @@ const useGetAdminData = ({refresh} : UseGetAdminDataProps) => {
     const [staffList, setStaffList] = React.useState<any>([])
     const [staffRequestList, setStaffRequestList] = React.useState<any>([])
     const [totalAdmins, setTotalAdmins] = React.useState<number>(0)
+    const [isLoading, setIsLoading] = React.useState(false)
 
     React.useEffect(() => {
         const getAdminDataFromFirestore = async () => {
     
          // This is to get admins data from firestore
-    
+         setIsLoading(true)
          let admins: any[] = []
          await getDocs(collection(db, "admins")).then((querySnapshotForAdmins) => {
             querySnapshotForAdmins?.forEach((doc) => {
               admins.push({...doc.data(), docId: doc.id})
               setAdminList([...admins])
+              setIsLoading(false)
             });
          }).catch((error: any) => {
           console.log(error.code)
+          setIsLoading(false)
          })
 
          let headAdminList: any [] = admins.filter((admin) => {
@@ -64,7 +67,8 @@ const useGetAdminData = ({refresh} : UseGetAdminDataProps) => {
     staffList,
     staffRequestList,
     headAdminList,
-    totalAdmins
+    totalAdmins,
+    isLoading
   }
 }
 

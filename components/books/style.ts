@@ -7,7 +7,7 @@ const classes = {
         position: 'relative',
         display: "flex",
         flexDirection: "column",
-        width: '100%'
+        width: '100%',
     },
     dashboardBodyContainer: {
         overflowY: 'auto',

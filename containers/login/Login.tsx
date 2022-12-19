@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { COLORS } from '../../utils/app_constants';
 import { useAuth } from '../../context/AuthContext';
 import {firebaseAuthMessageConverter} from '../../utils/helpers'
+import Cookies from 'js-cookie';
 
 interface UserDataType {
   email: string,
@@ -14,6 +15,11 @@ interface UserDataType {
 const Login = () => {
 
   const { user, login, getAdminStatus,  checkIfAdminHasDatabaseRecord } = useAuth()
+
+
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
+
+
 
   const [showLoginSuccessDialog, setShowLoginSuccessDialog] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
@@ -32,25 +38,29 @@ const Login = () => {
 
   const handleLogin = async () => {
     const {email, password} = userData
-
+    
+    setIsAuthenticating(true)
     setError(false)
     setInProgress(true)
     setInProgressMessage('Loggin you in... Please wait')
     if(email === ''){
       setErrorMessage('Please input your email/username')
       setInProgress(false)
+      setIsAuthenticating(false)
       return setError(true)
     }
 
     if(password === ''){
       setErrorMessage('Please input your password')
       setInProgress(false)
+      setIsAuthenticating(false)
       return setError(true)
     }
 
     if(password?.length <= 7){
       setErrorMessage('Password needs to have atleast 8 letters')
       setInProgress(false)
+      setIsAuthenticating(false)
       return setError(true)
     }
     setError(false)
@@ -63,16 +73,19 @@ const Login = () => {
         let admin = authUser.user
         checkIfAdminHasDatabaseRecord(admin.uid, admin.email, admin.displayName, admin.photoURL).then(() => {
           localStorage?.setItem('uid', admin?.uid ?? '')
+          Cookies.set('uid', admin?.uid ?? '');
           setInProgress(false)
           setErrorMessage('')
           setError(false)
           setUserData(authUser)
           getAdminStatus(admin.uid)
+          setIsAuthenticating(false)
           router.push('/homepage')
         }).catch((firebaseError: any) => {
           const firebaseMessageText = firebaseAuthMessageConverter(firebaseError.code as string)
           setInProgress(false)
           setErrorMessage(firebaseMessageText)
+          setIsAuthenticating(false)
         })
       })
       .catch((firebaseError: any) => {
@@ -80,11 +93,13 @@ const Login = () => {
         setInProgress(false)
         setErrorMessage(firebaseMessageText)
         setError(true)
+        setIsAuthenticating(false)
       })
     } catch (error) {
       setInProgress(false)
       setErrorMessage('Network connection error!')
       setError(true)
+      setIsAuthenticating(false)
     }
     
   }
@@ -143,7 +158,7 @@ const Login = () => {
                   }
                 </Box>
                 <Box  sx={classes.actionButtonContainer}>
-                  <Button size="large" variant='contained' fullWidth sx={classes.loginButton} onClick={handleLogin}>Login</Button>
+                  <Button size="large" variant='contained' fullWidth sx={classes.loginButton} onClick={handleLogin} disabled={isAuthenticating}>Login</Button>
                   <Divider />
                   <Button size="large" variant='outlined' fullWidth  sx={{padding: '10px 0'}} onClick={goToRegister}>Register</Button>
                 </Box>

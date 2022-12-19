@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@mui/icons-material'
-import { Box, Typography, Button, TextField, Dialog, InputAdornment, CircularProgress, Autocomplete} from '@mui/material'
+import { Box, Typography, Button, TextField, Dialog, InputAdornment, CircularProgress, Autocomplete, Alert} from '@mui/material'
 import {useState} from 'react'
 import BookList from '../book-list'
 import classes from './style'
@@ -13,7 +13,8 @@ import { serverTimestamp } from 'firebase/firestore';
 import { collection, query, where, getDocs, addDoc, doc, getDoc} from "firebase/firestore";
 import Image from 'next/image'
 import axios from 'axios'
-
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import IconButton from '@mui/material/IconButton'
 
 const BOOK_LOAD_PER_REFRESH = 50
 
@@ -93,15 +94,26 @@ const Books = () => {
     setSearchBookKeyword(value)
   }
 
+  const [success, setSuccess] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+  const handleAddBookSuccess = (isSuccess: boolean, successMessage: string) => {  
+    setSuccessMessage(successMessage)
+    setSuccess(isSuccess)
+  }
+
   
   return (
     <Box sx={classes.dashboardMainContainer}>
         {/* book Dialog Starts hereeee */}
-          <AddBookDialog openAddBookDialog={openAddBookDialog} handleOnAddImage={handleOnAddImage} handleCloseAddBookDialog={handleCloseAddBookDialog}/>
+          <AddBookDialog openAddBookDialog={openAddBookDialog} handleOnAddImage={handleOnAddImage} handleCloseAddBookDialog={handleCloseAddBookDialog} handleAddBookSuccess={handleAddBookSuccess}/>
         {/*Ends hereeee */}
        <Typography variant='h2'>
             Books
        </Typography>
+      <IconButton  onClick={handleOpenAddBookDialog} sx={{position: 'absolute', right: 15, bottom: 15, zIndex: 9999, color: '#fff', backgroundColor: 'red', '&:hover': {backgroundColor: '#c40808', color: 'white'}}}>
+              <AddCircleOutlineIcon sx={{height: 50, width: 50}}/>
+        </IconButton>
+        {success && (<Alert severity="success">{successMessage}</Alert>)}
        <Box sx={classes.dashboardBodyContainer}  onScroll={handleCheckIfScrolledToBottom}>
           <Box sx={classes.searchAndAddBookContainer}>
           <Autocomplete
@@ -140,6 +152,7 @@ const Books = () => {
                       src={ option.book_cover || IMAGES.NO_IMAGE_AVAILABLE}
                       height={50}
                       width={50}
+                      alt={option?.title}
                     />
                     {option.title}
                   </Box>
@@ -147,9 +160,6 @@ const Books = () => {
               )
             }}
           />
-         
-
-            <Button variant='contained' sx={classes.addBookButton} onClick={handleOpenAddBookDialog}>Add Book</Button>
           </Box>
           <Box sx={classes.bookListContainer}>
             { hasBookSearchResultsFound && (<Typography textAlign={'center'} component='h6'>Result books ({searchedBookResults.length})</Typography>)}

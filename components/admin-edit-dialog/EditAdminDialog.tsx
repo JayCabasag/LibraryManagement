@@ -26,7 +26,7 @@ const EditAdminDialog = ({ fullname, adminId, adminType,adminProfileImage,showEd
         })
       }
       currentAdminStatus(user.uid)
-    }, [user.uid])
+    }, [user.uid, getAdminStatus])
 
     const adminTypeOptions = currentAdminRank === 'head admin' ? ['head admin', 'admin', 'staff', 'requesting'] : ['staff', 'requesting']
 

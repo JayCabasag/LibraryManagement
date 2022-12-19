@@ -12,8 +12,9 @@ interface  DeleteBookDialog   {
 }
 const DeleteBookDialog = ({openDeleteBookDialog, bookDetails, handleCloseDeleteBookDialog, handleRefreshBookList} :  DeleteBookDialog ) => {
   
+  
   const handleDeleteBookPermanently = async () => {
-    const docId = bookDetails?.docId as string ?? ''
+    const docId = bookDetails?.docId as string ?? bookDetails?.objectID as string ?? ''
     try {
       await deleteDoc(doc(db,'books', docId )).then((response: any) => {
         setTimeout(() => {
@@ -34,8 +35,8 @@ const DeleteBookDialog = ({openDeleteBookDialog, bookDetails, handleCloseDeleteB
           <DialogTitle variant='h3'>Delete book</DialogTitle>
           <DialogContent>
                 Are you sure you want to delete this book?
-                <Typography component={'pre'}>Book ID :  {`${bookDetails?.docId as string}`}</Typography>
-                <Typography color={COLORS.RED} fontStyle='italic' component={'span'}>Note: This can't be undone.</Typography>
+                <Typography component={'pre'}>Book ID :  {`${bookDetails?.docId as string ?? bookDetails?.objectID as string}`}</Typography>
+                <Typography color={COLORS.RED} fontStyle='italic' component={'span'}>Note: This can&apos;t be undone.</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteBookDialog}>Cancel</Button>

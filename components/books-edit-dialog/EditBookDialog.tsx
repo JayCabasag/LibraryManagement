@@ -197,7 +197,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     setError(true)
     return
   }
-  if(bookData.bookSummary === '' || bookData.bookSummary  === undefined){
+  if(bookData.description === '' || bookData.description === undefined){
     setInProgress(false)
     setErrorMessage('Please add a book description')
     setError(true)
@@ -242,7 +242,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
   const payload = {
     title: bookData.title,
     tags: bookData.tags,
-    description: bookData.bookSummary,
+    description: bookData.description,
     book_cover: bookCoverPhotoUrl,
     file: bookPdfFileUrl,
     author: bookData?.author,
@@ -250,7 +250,6 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     createdAt: serverTimestamp()
   }
 
-  console.log(payload)
   try {
     const bookId = bookDetails?.docId as string  ?? bookDetails?.objectID ?? ''
 
@@ -259,6 +258,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
       setInProgress(false)
       setSuccessMessage('Updated book data successfully.')
       setSuccess(true)
+      handleCloseEditBookDialog()
     }).catch((error: any) => {
       setInProgress(false)
       setSuccess(false)

@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@mui/icons-material'
-import { Box, Typography, TextField, InputAdornment, Button, Alert} from '@mui/material'
+import { Box, Typography, TextField, InputAdornment, Button, Alert, CircularProgress} from '@mui/material'
 import React from 'react'
 import UserList from '../user-list'
 import classes from './style'
@@ -20,9 +20,8 @@ const Records = () => {
 
   const handleCheckIfScrolledToBottom = (event: React.UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget
-
     if (target.scrollHeight - target.scrollTop === target.clientHeight){
-      console.log('Bottom check if there is still others')
+      setMaxUserResultsLimit(prevState => prevState + USER_LOAD_PER_REFRESH)
     }
   }
 
@@ -48,6 +47,7 @@ const Records = () => {
        <Typography variant='h2'>
           User registration records
        </Typography>
+       <Typography textAlign={'center'} component='h6'>Total registration records ({overallTransactions?.length.toString()})</Typography>
        <Box>
         {
           error && (<Alert severity="error">Error : {errorMessage}!</Alert>)
@@ -59,10 +59,16 @@ const Records = () => {
        <Box sx={classes.studentBodyContainer} onScroll={handleCheckIfScrolledToBottom}>
           <Box sx={classes.studentListContainer}>
             {
-              hasNoTransactions && (<Box>No Records</Box>)
+              !isLoading && hasNoTransactions && (<Box>No Records</Box>)
             }
             {
-              !hasNoTransactions && overallTransactions.map((data: any, index: number) => {
+              isLoading && (<Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20vh', width: '100%', gap: 2}}>
+              <CircularProgress sx={{height: '50vh', width: '100%'}}/>
+              <Typography>Please wait...</Typography>
+             </Box>)
+            }
+            {
+              !isLoading && !hasNoTransactions && overallTransactions.map((data: any, index: number) => {
                 return <RecordList key={index} data={data} handleRefreshData={handleRefreshData} handleShowErrorMessage={handleShowErrorMessage} handleShowSuccessMessage={handleShowSuccessMessage}/>
               })
             }

@@ -56,7 +56,7 @@ const DeleteAdminDialog = ({ fullname, adminId, adminType, adminProfileImage,sho
           <DialogContent>
             <DialogContentText>
               {
-                !error && (<Alert severity='warning'>This action can't be undone</Alert>)
+                !error && (<Alert severity='warning'>This action can&apos;t be undone</Alert>)
               }
               {
                 error && (<Alert severity='error'>{errorMessage}</Alert>)

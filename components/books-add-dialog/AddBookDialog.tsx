@@ -21,10 +21,11 @@ import { Close } from '@mui/icons-material';
 interface AddBookDialogProps  {
     openAddBookDialog: boolean,
     handleOnAddImage: (e: Object) => void,
-    handleCloseAddBookDialog: () => void
+    handleCloseAddBookDialog: () => void,
+    handleAddBookSuccess: (isSuccess: boolean, successMessage: string) => void
 }
 
-const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookDialog} : AddBookDialogProps) => {
+const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookDialog, handleAddBookSuccess} : AddBookDialogProps) => {
   
   const [error, setError] = React.useState<boolean>(false)
   const [errorMessage, setErrorMessage] = React.useState<string>('')
@@ -193,6 +194,11 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
   } 
 }
 
+  const handleClearAllFields = () => {
+    setBookData({})
+    
+  }
+
   const handleSaveBook = async () => {
     setError(false)
     setSuccess(false)
@@ -297,10 +303,17 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
     try {
       await addDoc(collection(db, "books"), payload).then((response: any) => {
         const bookId = response?.id as string || 'Not set'
-        setSuccessMessage(`Book is now added on the library with Book Id: ${ bookId}`)
+        handleClearAllFields()
+        const successMessage = `Book is now added on the library with Book Id: ${bookId}`
+        setSuccessMessage(successMessage)
         setInProgress(false)
         setError(false)
-        setSuccess(true)
+        setSuccess(false)
+        setBookPdfFileUrl('')
+        setBookCoverPhotoUrl('')
+        handleAddBookSuccess(true, successMessage)
+        handleCloseAddBookDialog()
+        
       }).catch((error: any) => {
         setInProgress(false)
         setErrorMessage('Something went wrong while adding book, check your connection or contact admin')
@@ -314,7 +327,7 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
   }
 
   return (
-    <Dialog open={openAddBookDialog} onClose={handleCloseAddBookDialog}>
+    <Dialog open={openAddBookDialog} onClose={handleCloseAddBookDialog} disableRestoreFocus>
           <DialogActions>
             <IconButton onClick={handleCloseAddBookDialog} sx={{position: 'absolute', top: 20}}>
               <Close />

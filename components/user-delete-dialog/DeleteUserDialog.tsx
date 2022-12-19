@@ -15,7 +15,7 @@ const DeleteUserDialog = ({openDeleteUserDialog, userDetails, handleCloseDeleteU
           <DialogContent>
             <DialogContentText>
                 Are you sure you want to delete this User?
-                <Typography color={COLORS.RED} fontStyle='italic'>Note: This can't be undone.</Typography>
+                <Typography color={COLORS.RED} fontStyle='italic'>Note: This can&apos;t be undone.</Typography>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
