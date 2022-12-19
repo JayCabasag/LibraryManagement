@@ -7,13 +7,15 @@ import { IMAGES } from '../../utils/app_constants'
 import classes from './style'
 import EditIcon from '@mui/icons-material/Edit';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { storage } from '../../services/firebase-config'
+import { db, storage } from '../../services/firebase-config'
 import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { doc, updateDoc } from 'firebase/firestore';
+
 
 
 const Profile = () => {
@@ -141,7 +143,12 @@ const Profile = () => {
 
   if(user.displayName !== fullname){
     try {
-      await updateUserProfile(fullname, profileImage).then(() => {
+      await updateUserProfile(fullname, profileImage).then( async () => {
+        const washingtonRef = doc(db, "admins", user?.uid ?? '');
+        await updateDoc(washingtonRef, {
+          profileURL: profileImage
+        });
+
         setSuccess(true)
         setSuccessMessage('Updated user information successfully!.')
         setIsOnEditMode(false)
