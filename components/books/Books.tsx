@@ -8,12 +8,9 @@ import * as React from "react";
 import AddBookDialog from '../books-add-dialog'
 import useGetBooksData from '../../hooks/useGetBooksData'
 import { useDebouncedCallback } from 'use-debounce'
-import { db } from '../../services/firebase-config'
-import { serverTimestamp } from 'firebase/firestore';
-import { collection, query, where, getDocs, addDoc, doc, getDoc} from "firebase/firestore";
 import Image from 'next/image'
 import axios from 'axios'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {AddCircleOutline} from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton'
 
 const BOOK_LOAD_PER_REFRESH = 50
@@ -111,7 +108,7 @@ const Books = () => {
             Books
        </Typography>
       <IconButton  onClick={handleOpenAddBookDialog} sx={{position: 'absolute', right: 15, bottom: 15, zIndex: 9999, color: '#fff', backgroundColor: 'red', '&:hover': {backgroundColor: '#c40808', color: 'white'}}}>
-              <AddCircleOutlineIcon sx={{height: 50, width: 50}}/>
+              <AddCircleOutline sx={{height: 50, width: 50}}/>
         </IconButton>
         {success && (<Alert severity="success">{successMessage}</Alert>)}
        <Box sx={classes.dashboardBodyContainer}  onScroll={handleCheckIfScrolledToBottom}>
