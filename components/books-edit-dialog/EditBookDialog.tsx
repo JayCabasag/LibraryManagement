@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, IconButton, InputAdornment} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle,Tooltip, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, IconButton, InputAdornment} from '@mui/material'
 import Image from 'next/image'
 import {GOOGLE_DOCS_PLAYER, IMAGES} from '../../utils/app_constants'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -12,6 +12,7 @@ import { setDoc, doc } from "firebase/firestore";
 import { Close } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 interface EditBookDialogProps  {
     openEditBookDialog: boolean,
@@ -48,6 +49,17 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
     })
   }
 
+  const [showCopiedTooltip, setShowCopiedTooltip] = React.useState(false)
+
+  const handleCopyUid = () => {
+    navigator.clipboard.writeText(bookData?.docId as string ?? bookData?.objectID ?? "Not set").then(()=> {
+      setShowCopiedTooltip(true)
+    })
+  }
+  
+  const handleCloseTooltip = () => {
+    setShowCopiedTooltip(false)
+  }
   const handleUpdateBookDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     const descriptionValue = event.currentTarget.value
     setBookData({
@@ -320,6 +332,17 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
                     variant="outlined"
                     disabled
                     defaultValue={bookData?.docId as string ?? bookData?.objectID ?? "Not set"}
+                    InputProps={{
+                      endAdornment: (
+                        <Tooltip title="Copied" placement="bottom" arrow open={showCopiedTooltip} onClose={handleCloseTooltip}>
+                           <InputAdornment position='end'>
+                              <IconButton onClick={handleCopyUid}>
+                                <ContentCopyIcon />
+                              </IconButton>
+                            </InputAdornment>
+                        </Tooltip>
+                      )
+                    }}
                 />
                 <TextField
                     autoFocus

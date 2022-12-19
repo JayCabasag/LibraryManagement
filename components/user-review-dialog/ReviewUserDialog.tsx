@@ -1,9 +1,10 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, InputAdornment, IconButton} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, Box, Typography, Button, TextField, Alert, InputAdornment, IconButton, Tooltip} from '@mui/material'
 import Image from 'next/image'
 import {IMAGES} from '../../utils/app_constants'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 interface EditUserDialogProps  {
     openEditUserDialog: boolean,
@@ -21,6 +22,19 @@ const ReviewUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserD
 
   const encodedPassword = userDetails?.password as string ?? ''
   const decodedPassword = atob(encodedPassword);
+
+
+  const [showCopiedTooltip, setShowCopiedTooltip] = React.useState(false)
+
+  const handleCopyUid = () => {
+    navigator.clipboard.writeText(userDetails?.docId as string ?? userDetails?.objectID ?? "Not set").then(()=> {
+      setShowCopiedTooltip(true)
+    })
+  }
+  
+  const handleCloseTooltip = () => {
+    setShowCopiedTooltip(false)
+  }
 
   return (
     <Dialog open={openEditUserDialog} onClose={handleCloseEditUserDialog}>
@@ -45,6 +59,17 @@ const ReviewUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserD
                   fullWidth
                   variant="outlined"
                   disabled
+                  InputProps={{
+                    endAdornment: (
+                      <Tooltip title="Copied" placement="bottom" arrow open={showCopiedTooltip} onClose={handleCloseTooltip}>
+                         <InputAdornment position='end'>
+                            <IconButton onClick={handleCopyUid}>
+                              <ContentCopyIcon />
+                            </IconButton>
+                          </InputAdornment>
+                      </Tooltip>
+                    )
+                  }}
                 />
                 <TextField
                 autoFocus

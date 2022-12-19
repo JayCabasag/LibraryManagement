@@ -19,7 +19,7 @@ const Dashboard = () => {
        <Box sx={classes.dashboardBodyContainer}>
           <Grid container spacing={3} columns={12}>
             <Grid item xs={4}>
-              <Card routeName='professors' title='Users in Application' total={overallUsersTotal}/>
+              <Card routeName='users' title='Users in Application' total={overallUsersTotal}/>
             </Grid>
             <Grid item xs={4}>
               <Card routeName='books' title='Total Books' total={totalBooks}/>
