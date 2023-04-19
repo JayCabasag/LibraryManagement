@@ -157,10 +157,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-interface IndexProps {
-  authorize: any
-}
-const HomePage = ({authorize}: IndexProps) =>  {
+const HomePage = () =>  {
   const theme = useTheme();
   const [openSidebar, setOpenSidebar] = React.useState(true);
 

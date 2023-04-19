@@ -1,2 +1,6 @@
 import HomePage from "./[slug]"
-export default HomePage
+import React from 'react'
+
+export default function Index() {
+  return <HomePage />
+}
