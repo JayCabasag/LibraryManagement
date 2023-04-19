@@ -45,7 +45,7 @@ const ReviewUserDialog = ({openEditUserDialog, userDetails, handleCloseEditUserD
             </DialogContentText>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <Image src={userDetails?.photoURL as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='book cover'  height={300} width={300}/>
+                <img src={userDetails?.photoURL as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='book cover'  height={300} width={300}/>
               </Box>
               <Box>
                 <Typography>User Information</Typography>

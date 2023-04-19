@@ -277,7 +277,7 @@ const Profile = () => {
             success && <Alert severity='success'>{successMessage}</Alert>
           }
           <CardActionArea sx={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', marginTop: 1}}>
-            <Image 
+            <img 
               src={profileImage} 
               alt='profile' 
               height={200}

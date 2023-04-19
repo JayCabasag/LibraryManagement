@@ -208,7 +208,7 @@ const Register = () => {
             <Alert severity="warning">Note: Registration for admin needs an approval.</Alert>
                  <Box sx={{display: 'flex', flexDirection: 'row', gap: 1, marginBottom: 2, width: '100%'}}>
                   <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 1, flex: 1}}>
-                    <Image src={profileImage} alt='Profile' width={150} height={150} style={{borderRadius: '50%'}}/>
+                    <img src={profileImage} alt='Profile' width={150} height={150} style={{borderRadius: '50%'}}/>
                         <Button startIcon={<CloudUploadIcon />} component='label' variant='outlined'>
                             <Typography>
                             {

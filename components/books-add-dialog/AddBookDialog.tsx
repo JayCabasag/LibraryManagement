@@ -352,7 +352,7 @@ const AddBookDialog = ({openAddBookDialog, handleOnAddImage, handleCloseAddBookD
              }
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <Image src={bookCoverPhotoUrl} alt='book cover' onError={({currentTarget}) => {currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE}}  height={300} width={300}/>
+                <img src={bookCoverPhotoUrl} alt='book cover' onError={({currentTarget}) => {currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE}}  height={300} width={300}/>
                 <Button startIcon={<CloudUploadIcon />} component='label' variant='outlined' onChange={(e) => handleOnAddImage(e)}>
                   UPLOAD COVER
                   <input hidden accept="image/*" type="file" onChange={pickBookCoverPhotoFile}/>

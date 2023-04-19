@@ -144,7 +144,7 @@ const Books = () => {
               return (
                 <li {...props} key={option.title}>
                   <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
-                    <Image 
+                    <img 
                       src={ option.book_cover || IMAGES.NO_IMAGE_AVAILABLE}
                       height={50}
                       width={50}

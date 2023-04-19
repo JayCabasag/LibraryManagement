@@ -315,7 +315,7 @@ const EditBookDialog = ({openEditBookDialog, bookDetails, handleOnEditImage, han
              }
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
               <Box sx={{display: 'flex', flexDirection: 'column', padding: 1, gap: 1}}>
-                <Image src={bookCoverPhotoUrl} alt='book cover' height={500} width={450}/>
+                <img src={bookCoverPhotoUrl} alt='book cover' height={500} width={450}/>
                 <Button startIcon={<CloudUploadIcon />} component='label' variant='outlined' onChange={(e) => handleOnEditImage(e)}>
                   CHANGE COVER
                   <input hidden accept="image/*" type="file" onChange={pickBookCoverPhotoFile}/>
