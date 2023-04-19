@@ -1,2 +1,2 @@
-import index from "./[slug]"
-export default index
+import HomePage from "./[slug]"
+export default HomePage

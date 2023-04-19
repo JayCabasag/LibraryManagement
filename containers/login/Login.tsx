@@ -15,11 +15,7 @@ interface UserDataType {
 const Login = () => {
 
   const { user, login, getAdminStatus,  checkIfAdminHasDatabaseRecord } = useAuth()
-
-
   const [isAuthenticating, setIsAuthenticating] = useState(false)
-
-
 
   const [showLoginSuccessDialog, setShowLoginSuccessDialog] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
@@ -158,7 +154,7 @@ const Login = () => {
                   }
                 </Box>
                 <Box  sx={classes.actionButtonContainer}>
-                  <Button size="large" variant='contained' fullWidth sx={classes.loginButton} onClick={handleLogin} disabled={isAuthenticating}>Login</Button>
+                  <Button size="large" variant='contained' fullWidth sx={classes.loginButton} onClick={handleLogin} disabled={isAuthenticating}>{isAuthenticating ? 'Please wait...' : 'Login' }</Button>
                   <Divider />
                   <Button size="large" variant='outlined' fullWidth  sx={{padding: '10px 0'}} onClick={goToRegister}>Register</Button>
                 </Box>

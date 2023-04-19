@@ -48,7 +48,10 @@ const classes = {
         padding: '12px 0',
         backgroundColor: COLORS.RED,
         border: `1px solid ${COLORS.RED}`,
-       
+        ':disabled': {
+          backgroundColor: COLORS.RED,
+          color: COLORS.WHITE
+        }
     },
     loginSuccessDialog: {
         '.MuiDialog-paper': {

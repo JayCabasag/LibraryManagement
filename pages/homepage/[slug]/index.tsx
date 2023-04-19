@@ -160,7 +160,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface IndexProps {
   authorize: any
 }
-const Index = ({authorize}: IndexProps) =>  {
+const HomePage = ({authorize}: IndexProps) =>  {
   const theme = useTheme();
   const [openSidebar, setOpenSidebar] = React.useState(true);
 
@@ -385,4 +385,4 @@ const Index = ({authorize}: IndexProps) =>  {
     );
 }
 
-export default Index
+export default HomePage
