@@ -148,8 +148,7 @@ const Books = () => {
                       src={ option.book_cover || IMAGES.NO_IMAGE_AVAILABLE}
                       height={50}
                       width={50}
-                      alt={option?.title}
-                    />
+                      alt={option?.title} />
                     {option.title}
                   </Box>
                 </li>
