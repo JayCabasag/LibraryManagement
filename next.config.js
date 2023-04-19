@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  distDir: 'build',
   images: {
-    domains: ['tcu.taguig.gov.ph', 'pbs.twimg.com', 'upload.wikimedia.org', 'firebasestorage.googleapis.com', 'tcumobilelibrary.appspot.com'],
+    domains: ['*'],
   },
   env: {
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
@@ -14,6 +12,6 @@ const nextConfig = {
     MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
     APP_ID: process.env.APP_ID
   }
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
