@@ -2,7 +2,38 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['tcu.taguig.gov.ph', 'pbs.twimg.com', 'upload.wikimedia.org', 'firebasestorage.googleapis.com', 'tcumobilelibrary.appspot.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbs.twimg.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'tcumobilelibrary.appspot.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   env: {
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
