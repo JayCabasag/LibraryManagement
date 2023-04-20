@@ -90,7 +90,7 @@ const AdminStaffList = ({fullname, adminId, adminType, adminProfileImage, adminS
         
     <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>
       <Box>
-        <img src={adminProfileImage} alt='Profile' height={75} width={75} />
+        <Image src={adminProfileImage} alt='Profile' height={75} width={75} />
       </Box>
       <Box>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>

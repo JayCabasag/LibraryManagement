@@ -13,7 +13,7 @@ const Register = () => {
     const [error, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>('')
     const [profileImage, setProfileImage] = useState<string>(IMAGES.PROFILE_IMAGE_NOT_AVAILABLE)
-    const [uploadProfileIMageProgress, setUploadProfileIMageProgress] = useState<Number>(0)
+    const [uploadProfileIMageProgress, setUploadProfileIMageProgress] = useState<number>(0)
     const [userData, setUserData] = useState<any>({})
     const {signup, user, updateUserProfile, addAdminCredentialToDatabase} = useAuth()
     const [success, setSuccess] = useState<boolean>(false)
@@ -208,7 +208,7 @@ const Register = () => {
             <Alert severity="warning">Note: Registration for admin needs an approval.</Alert>
                  <Box sx={{display: 'flex', flexDirection: 'row', gap: 1, marginBottom: 2, width: '100%'}}>
                   <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 1, flex: 1}}>
-                    <img src={profileImage} alt='Profile' width={150} height={150} style={{borderRadius: '50%'}}/>
+                    <Image src={profileImage} alt='Profile' width={150} height={150} style={{borderRadius: '50%'}}/>
                         <Button startIcon={<CloudUploadIcon />} component='label' variant='outlined'>
                             <Typography>
                             {
@@ -222,7 +222,7 @@ const Register = () => {
                             )
                             }
                             {
-                                uploadProfileIMageProgress <= 99 && uploadProfileIMageProgress > 0 && (
+                                (uploadProfileIMageProgress <= 99) && uploadProfileIMageProgress > 0 && (
                                     `UPLOADING ${uploadProfileIMageProgress.toFixed()}%`
                                 )
                             }

@@ -242,7 +242,7 @@ const HomePage = () =>  {
                   aria-controls="user-menu" 
                   aria-haspopup="true"
                  > 
-                  <img alt='profile' src={user.profileURL} onError={({currentTarget}) => {currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE}} height={45} width={45} />
+                  <Image alt='profile' src={user.profileURL} onError={({currentTarget}) => {currentTarget.src = IMAGES.PROFILE_IMAGE_NOT_AVAILABLE}} height={45} width={45} />
                 </Box>
               </Box>
              

@@ -43,7 +43,7 @@ const BookList = ({bookData, handleRefreshBookList}: BookListProps) => {
       {/* Delete dialog ends here */}
     <CardContent sx={{flex: 1, display: 'flex', alignItems: 'center', gap: 1}}>
       <Box>
-        <img src={bookData?.book_cover as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='Book cover' onError={({currentTarget}) => {currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE}} height={150} width={150} />
+        <Image src={bookData?.book_cover as string ?? IMAGES.NO_IMAGE_AVAILABLE} alt='Book cover' onError={({currentTarget}) => {currentTarget.src = IMAGES.NO_IMAGE_AVAILABLE}} height={150} width={150} />
       </Box>
       <Box>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
