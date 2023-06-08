@@ -15,3 +15,7 @@ export const IMAGES = {
 export const USER_LOAD_PER_REFRESH = 50
 
 export const GOOGLE_DOCS_PLAYER = 'http://docs.google.com/gview?embedded=true&url='
+
+export const ALGOLIA_SEARCH_URL = 'https://M70JQ0SK9C-dsn.algolia.net/1/indexes/books?query='
+export const ALGOLIA_SEARCH_API_KEY = '8d1c6df076f6118489e05560c72eefff'
+export const ALGOLIA_SEARCH_APP_ID = 'M70JQ0SK9C'
