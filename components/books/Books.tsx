@@ -81,9 +81,9 @@ const Books = () => {
   }
 
   const debounceKeyword = useDebouncedCallback((value) => {
-    const isKeywordBlack = value.length <= 0
-    if (isKeywordBlack) return
-    searchBooks(value)
+    const isKeywordBlank = value.length <= 0
+    if (isKeywordBlank) return setSearchedBookResults([])
+    return searchBooks(value)
   }, 700)
 
   const handleOnPressedEnter = (value: string) => {
@@ -114,9 +114,6 @@ const Books = () => {
         <Box sx={classes.searchAndAddBookContainer}>
           <Autocomplete
             id="free-solo-demo"
-            getOptionLabel={searchedBookResult => {
-              return searchedBookResult.title
-            }}
             defaultValue={{ title: searchBookKeyword }}
             freeSolo
             renderInput={(params) => <TextField {...params}
@@ -134,7 +131,8 @@ const Books = () => {
                 },
               }} />
             }
-            options={searchedBookResults}
+            disablePortal
+            options={[]}
             sx={classes.searchTextfield}
             disableClearable
             renderOption={(
