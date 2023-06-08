@@ -114,6 +114,9 @@ const Books = () => {
         <Box sx={classes.searchAndAddBookContainer}>
           <Autocomplete
             id="free-solo-demo"
+            getOptionLabel={() => {
+              return ''
+            }}
             defaultValue={{ title: searchBookKeyword }}
             freeSolo
             renderInput={(params) => <TextField {...params}
